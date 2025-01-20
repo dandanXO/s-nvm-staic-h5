@@ -1,40 +1,62 @@
 <template>
-  <div class="announcement-component">
-    <el-carousel class="banner-slider" :autoplay="false" :interval="5000">
-      <el-carousel-item class="banner-container" v-for="item in 2" :key="item">
-        <div class="announcement-title">体育场馆维护公告{{ item }}</div>
+  <q-carousel
+    v-model="innerSlide"
+    swipeable
+    animated
+    :navigation="false"
+    infinite
+    :arrows="false"
+    @update:model-value="emits('chageSlide',$event)"
+  >
+    <q-carousel-slide v-for="(item, index) in 6" :key="index" :name="index" class="column no-wrap flex-center">
+      <div class="announcement-component">
+        <div class="announcement-title">体育场馆维护公告 {{ index + 1 }}</div>
         <div class="announcement-content">
-          尊敬的会员，恭喜您于 2023/08/1 使用 PAY 钱包、USDT
-          进行提款，产生一笔幸运订单。彩金已经派发至您的游戏账户内请您当日内查收。恭喜您于 2023/08/1 使用 PAY 钱包、USDT
-          进行提款，产生一笔幸运订单。彩金已经派发至您的游戏账户内请您当日内查收。祝您好运连连！天天爆米。祝您好运连连！天天爆米。祝您好运连连！天天爆米。祝您好运连连！天天爆米。祝您好运连连！天天爆米。祝您好运连连！天天爆米。祝您好运连连！天天爆米。天天爆米。祝您好运连连！天天爆米。祝您好运连连！天天爆米。天天爆米。祝您好运连连！天天爆米。祝您好运连连！天天爆米。天天爆米。祝您好运连连！天天爆米。祝您好运连连！天天爆米。
+          尊敬的会员，恭喜您于 2023/08/1
+          使用 PAY 钱包、USDT 进行提款，产生一笔幸运订单。彩金已经派发至您的游戏账户内请您当日内查收。恭喜您于 2023/08/1
+          使用 PAY 钱包、USDT 进行提款，产生一笔幸运订单。彩金已经派发至您的游戏账户内请您当日内查收。祝您好运连连！天天爆米。祝您好运连连！天天爆米。祝您好运连连！天天爆米。祝您好运连连！天天爆米。祝您好运连连！天天爆米。祝您好运连连！天天爆米。祝您好运连连！天天爆米。天天爆米。祝您好运连连！天天爆米。祝您好运连连！天天爆米。天天爆米。祝您好运连连！天天爆米。祝您好运连连！天天爆米。天天爆米。祝您好运连连！天天爆米。祝您好运连连！天天爆米。
         </div>
         <div class="announcement-footer">
-          <div class="footer-button" @click="store.openLiveChat()">
+          <div class="footer-button" @click="handleService">
             联系客服
-            <img src="@/assets/images/home/sticky-sidebar/cs-icon.svg" />
+            <img src="../../assets/images/home/announcement/arrow-right.svg" alt="">
           </div>
-          <div class="footer-button detail" @click="handleDetail">
+          <div class="footer-button" @click="handleDetail">
             查看详情
-            <el-icon :size="20">
-              <img src="../../assets/home/arrow-drop-right-line.svg" />
-            </el-icon>
+            <img src="../../assets/images/home/announcement/arrow-right.svg" alt="">
           </div>
         </div>
-      </el-carousel-item>
-    </el-carousel>
-  </div>
+      </div>
+    </q-carousel-slide>
+  </q-carousel>
 </template>
 
 <script setup>
-import { userStore } from "@/store";
+import { ref,watch, defineEmits } from "vue";
 
 const props = defineProps({
-  announceData: {
-    type: Array,
-    default: () => []
+  slide: {
+    type: Number,
+    default: 1
   }
-});
-const store = userStore();
+})
+const emits = defineEmits(['chageSlide']);
+const innerSlide = ref(0)
+watch(()=>props.slide,(newV, oldV)=>{
+  innerSlide.value = newV
+  
+  if(newV!=oldV){
+    
+    
+  }
+  
+},{immediate: true})
+watch(()=> innerSlide, (newV)=>{
+  console.log('inin')
+  emits('chageSlide',newV)
+})
+const handleService = () => {
+};
 
 const handleDetail = () => {
   console.log("handleDetail");
@@ -42,12 +64,11 @@ const handleDetail = () => {
 </script>
 
 <style lang="scss" scoped>
-.banner-container {
-  min-height: 400px;
-  height: 100%;
-}
 .announcement-component {
   padding: 10px 12px 16px;
+  background: white;
+  height: 100%;
+  overflow: auto;
 }
 
 .announcement-title {
@@ -65,28 +86,22 @@ const handleDetail = () => {
 
 .announcement-footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 12px;
   align-items: center;
 
   .footer-button {
     cursor: pointer;
-    color: #2f3244;
+    background: #cfcfcf;
     display: inline-flex;
     justify-content: center;
     align-items: center;
     border-radius: 6px;
-    height: 48px;
+    height: 30px;
     font-size: 16px;
-    border: 1px solid #2f3244;
-    flex: 1;
     gap: 2px;
-
-    &.detail {
-      background: #2792fd;
-      color: white;
-      border: none;
-    }
+    padding: 8px 12px;
+    color: white;
   }
 }
 </style>

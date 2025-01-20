@@ -1,6 +1,7 @@
+s
 <template>
   <div class="bonus-wrapper">
-    <img src="../../../assets/images/promotion/hotpromo/2025-cny-lucky-draw/bonus-bg.png" class="bg-image" />
+    <img src="@/assets/images/promo/hotpromo/2025-cny-lucky-draw/bonus-bg.jpeg" class="bg-image" />
     <div class="bg-title">
       <div class="egg-available-draw">
         Tổng số lần đập trứng vàng:
@@ -9,18 +10,23 @@
       </div>
     </div>
     <img
-      src="../../../assets/images/promotion/hotpromo/2025-cny-lucky-draw/bonus-egg1.png"
+      src="@/assets/images/promo/hotpromo/2025-cny-lucky-draw/bonus-egg2.png"
       class="bg-egg"
       @click="handleClaimClick"
     />
+    <div @click="handleClaimClick" class="egg-button">Đập trứng vàng</div>
   </div>
   <div class="new-player-wrapper">
-    <img class="title" src="@/assets/images/promotion/hotpromo/newPlayer/title.png" />
+    <div style="display: flex; justify-content: center; align-items: center; gap: 12px">
+      <img class="title" style="width: 17%" src="@/assets/images/promo/hotpromo/2025-cny-lucky-draw/title1.png" />
+      <img class="title" style="width: 66%" src="@/assets/images/promo/hotpromo/2025-cny-lucky-draw/title2.png" />
+      <img class="title" style="width: 17%" src="@/assets/images/promo/hotpromo/2025-cny-lucky-draw/title3.png" />
+    </div>
 
     <div class="rule-block">
       <div class="rule-block-rule">
         <div class="rule-block-rule__title">Thời gian</div>
-        <span class="rule-block-rule__description">00:00 20/01/2025-23:59 02/02/2025</span>
+        <span class="rule-block-rule__description" style="line-height: 20px">00:00 20/01/2025-23:59 02/02/2025</span>
       </div>
       <div class="rule-block-rule">
         <div class="rule-block-rule__title">Áp dụng</div>
@@ -31,7 +37,7 @@
         <span class="rule-block-rule__description">Tất cả sản phẩm tại TF88</span>
       </div>
       <div class="rule-block-rule" style="flex-direction: column; align-items: flex-start">
-        <!--        <div class="rule-block-rule__title">Chi tiết khuyến mãi</div>-->
+        <!--        <div class="rule-block-rule__title">Sản phẩm</div>-->
         <span class="rule-block-rule__description">
           Trong thời gian khuyến mãi, Thành viên đạt đủ doanh thu cược theo yêu cầu sẽ có cơ hội tham gia đập trứng vàng
           để nhận thưởng hấp dẫn, bao gồm tiền mặt ngẫu nhiên từ 18 VNDP đến 888 VNDP và giải thưởng cao nhất là 1 lượng
@@ -46,10 +52,38 @@
           </colgroup>
           <tbody>
             <tr>
-              <td>Tổng tiền cược hợp lệ</td>
-              <td>Lượt đập trứng</td>
-              <td>Số lần đập tối đa nhận được mỗi ngày</td>
-              <td>Thời gian hiệu lực của cơ hội đập trứng vàng</td>
+              <td
+                style="
+                  background: linear-gradient(180deg, #70cbfb 0%, #4aa5ff 49%, #4aa5ff 91.5%, #6ec7fd 100%);
+                  color: white;
+                "
+              >
+                Tổng tiền cược hợp lệ
+              </td>
+              <td
+                style="
+                  background: linear-gradient(180deg, #70cbfb 0%, #4aa5ff 49%, #4aa5ff 91.5%, #6ec7fd 100%);
+                  color: white;
+                "
+              >
+                Lượt đập trứng
+              </td>
+              <td
+                style="
+                  background: linear-gradient(180deg, #70cbfb 0%, #4aa5ff 49%, #4aa5ff 91.5%, #6ec7fd 100%);
+                  color: white;
+                "
+              >
+                Số lần đập tối đa nhận được mỗi ngày
+              </td>
+              <td
+                style="
+                  background: linear-gradient(180deg, #70cbfb 0%, #4aa5ff 49%, #4aa5ff 91.5%, #6ec7fd 100%);
+                  color: white;
+                "
+              >
+                Thời gian hiệu lực của cơ hội đập trứng vàng
+              </td>
             </tr>
             <tr>
               <td>5,000 VNDP</td>
@@ -85,15 +119,29 @@
       </p>
       <h3 class="mission-block-title">Giải thưởng bao gồm:</h3>
       <div class="mission-block-mission-wrapper promo-view-container">
-        <table class="smaller-table">
+        <table>
           <colgroup>
             <col />
             <col />
           </colgroup>
           <tbody>
             <tr>
-              <td>STT</td>
-              <td>Giải thưởng</td>
+              <td
+                style="
+                  background: linear-gradient(180deg, #70cbfb 0%, #4aa5ff 49%, #4aa5ff 91.5%, #6ec7fd 100%);
+                  color: white;
+                "
+              >
+                STT
+              </td>
+              <td
+                style="
+                  background: linear-gradient(180deg, #70cbfb 0%, #4aa5ff 49%, #4aa5ff 91.5%, #6ec7fd 100%);
+                  color: white;
+                "
+              >
+                Giải thưởng
+              </td>
             </tr>
             <tr>
               <td>1</td>
@@ -146,8 +194,8 @@
         <br />
         2. Tiền thưởng nhận được cần hoàn thành 5 vòng cược trước khi thực hiện rút tiền.
         <br />
-        3. Tất cả cược HÒA, cược HỦY, cược 2 BÊN, vé cược đặt tại tỷ lệ cược: DEC < 1.75, MY -0.6 đến 0.75, Thể thao ảo,
-        Đua ngựa, Number Game sẽ không được áp dụng cho chương trình này.
+        3. Tất cả cược HÒA, cược HỦY, cược 2 BÊN, vé cược đặt tại tỷ lệ cược: DEC &lt; 1.75, MY -0.6 đến 0.75, Thể thao
+        ảo, Đua ngựa, Number Game sẽ không được áp dụng cho chương trình này.
         <br />
         4. Các tài khoản có cùng IP hoặc thông tin dữ liệu tương tự sẽ không được tham gia chương trình khuyến mãi này.
         <br />
@@ -160,54 +208,58 @@
       </p>
     </div>
   </div>
-  <el-dialog class="draw-modal" :modal="true" v-model="bonusModalVisible" align-center>
-    <div class="egg-dialog-container">
-      <img class="bound-bg-top" :src="boundBgTop" />
-      <div class="bound-bg-mid">
-        <div>Chúc mừng bạn nhận được</div>
-      </div>
-      <!-- <img class="bound-image" :src="bonusImage[18]" /> -->
-      <img class="bound-image" :src="bonusImage[bonus]" />
-      <div class="bound-cycle-light"></div>
-      <div class="bound-text">
-        <div>
-          {{ bonusText[bonus] }}
-          <!-- {{bonusText[18]}} -->
+  <q-dialog v-model="bonusModalVisible" persistent>
+    <div class="dialog_continaer">
+      <div class="dialog_inner">
+        <!-- <q-btn dense rounded icon="close" class="bg-grey-1 text-black popout-close" v-close-popup /> -->
+        <img class="bound-bg-top" :src="boundBgTop" />
+        <div class="bound-bg-mid">
+          <div>Chúc mừng bạn nhận được</div>
+        </div>
+        <img class="bound-image" :src="bonusImage[bonus]" />
+        <!-- <img class="bound-image" :src="bonusImage[18]" /> -->
+        <div class="bound-cycle-light"></div>
+        <div class="bound-text">
+          <div>
+            {{ bonusText[bonus] }}
+            <!-- {{bonusText[18]}} -->
+          </div>
+        </div>
+        <div class="bound-close" @click="bonusModalVisible = false">
+          <div>Nhận Ngay</div>
         </div>
       </div>
-      <div class="bound-close" @click="bonusModalVisible = false">
-        <div>Nhận Ngay</div>
-      </div>
     </div>
-  </el-dialog>
+  </q-dialog>
 </template>
 <script setup>
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { ElMessage } from "element-plus";
-import { drawEventInit, claimDrawEvent } from "@/api/promotion/drawEvent";
-import { userStore } from "@/store";
+import { drawEventInit, claimDrawEvent } from "@/api/promo/drawEvent";
+import { userStore } from "src/stores";
 
 const { t } = useI18n();
 const props = defineProps(["promoCode"]);
 
 const bonusModalVisible = ref(false);
+
 const validBet = ref(0);
 const minValidBet = ref(0);
 const availableDraw = ref(0);
 const usedDraw = ref(0);
 const totalDraw = ref(0);
-
 const store = userStore();
 const bonus = ref(0);
 const bonusName = ref("");
-const boundBgTop = require("../../../assets/images/promotion/hotpromo/2025-cny-lucky-draw/bound-bg-top.png");
+
+const boundBgTop = require("@/assets/images/promo/hotpromo/2025-cny-lucky-draw/bound-bg-top.png");
+
 const bonusImage = {
-  18: require("../../../assets/images/promotion/hotpromo/2025-cny-lucky-draw/bound18.png"),
-  28: require("../../../assets/images/promotion/hotpromo/2025-cny-lucky-draw/bound28.png"),
-  38: require("../../../assets/images/promotion/hotpromo/2025-cny-lucky-draw/bound38.png"),
-  88: require("../../../assets/images/promotion/hotpromo/2025-cny-lucky-draw/bound88.png"),
-  888: require("../../../assets/images/promotion/hotpromo/2025-cny-lucky-draw/bound888.png")
+  18: require("@/assets/images/promo/hotpromo/2025-cny-lucky-draw/bound18.png"),
+  28: require("@/assets/images/promo/hotpromo/2025-cny-lucky-draw/bound28.png"),
+  38: require("@/assets/images/promo/hotpromo/2025-cny-lucky-draw/bound38.png"),
+  88: require("@/assets/images/promo/hotpromo/2025-cny-lucky-draw/bound88.png"),
+  888: require("@/assets/images/promo/hotpromo/2025-cny-lucky-draw/bound888.png")
 };
 const bonusText = {
   18: "18 VNDP",
@@ -227,7 +279,11 @@ const handleClaimClick = () => {
       initGoldenEgg();
       store.getBalance();
     } else {
-      ElMessage.error(res.message);
+      $q.notify({
+        color: "negative",
+        position: "top",
+        message: res.message
+      });
     }
   });
 };
@@ -242,7 +298,11 @@ const initGoldenEgg = () => {
       usedDraw.value = data.usedDraw;
       totalDraw.value = data.totalDraw;
     } else {
-      ElMessage.error(res.message);
+      $q.notify({
+        color: "negative",
+        position: "top",
+        message: res.message
+      });
     }
   });
 };
@@ -252,36 +312,53 @@ onMounted(() => {
 });
 </script>
 <style lang="scss" scoped>
-.egg-dialog-container {
-  background-image: url(../../../assets/images/promotion/hotpromo/2025-cny-lucky-draw/bound-bg.png);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  height: 500px;
-  width: 560px;
+.dialog_continaer {
+  height: 520px;
+  width: 95%;
   position: relative;
   transform: scale(0.85);
+
+  @media (max-width: 400px) {
+    height: 430px;
+  }
+}
+.dialog_inner {
+  background-image: url(../../../assets/images/promo/hotpromo/2025-cny-lucky-draw/bound-bg.png);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  min-height: 260px;
+  width: 100%;
+  bottom: 0px;
+  position: absolute;
+  aspect-ratio: 560/529;
 
   .bound-bg-top {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    top: -14%;
+    top: -19%;
+    width: 100%;
   }
   .bound-bg-mid {
-    background-image: url(../../../assets/images/promotion/hotpromo/2025-cny-lucky-draw/bound-bg-close-btn.png);
+    background-image: url(../../../assets/images/promo/hotpromo/2025-cny-lucky-draw/bound-bg-close-btn.png);
     position: absolute;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
     left: 50%;
     transform: translateX(-50%);
-    top: 7%;
-    width: 392px;
-    height: 62px;
+    top: 9%;
+    aspect-ratio: 392/62;
+    width: 75%;
+    // height: 62px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 26px;
+    font-size: 1.5rem;
     color: #fff;
+    z-index: 10;
 
     div {
+      white-space: nowrap;
       text-transform: capitalize;
     }
   }
@@ -290,49 +367,53 @@ onMounted(() => {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    top: 17%;
-    width: 266px;
-    height: 266px;
+    top: 19%;
+    width: 160px;
+    height: 160px;
   }
-  .bound-cycle-light {
-    z-index: 1;
-    background-image: url(../../../assets/images/promotion/hotpromo/2025-cny-lucky-draw/bound-cycle-light.png);
+  .bound-text {
+    background-image: url(../../../assets/images/promo/hotpromo/2025-cny-lucky-draw/bound-money-bg.png);
     background-size: 100% 100%;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    top: 31%;
-    width: 271px;
-    height: 229px;
-    font-weight: bold;
-  }
-  .bound-text {
-    background-image: url(../../../assets/images/promotion/hotpromo/2025-cny-lucky-draw/bound-money-bg.png);
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 68%;
-    width: 428px;
-    height: 56px;
+    top: 66%;
+    width: 80%;
+    height: 34px;
+    z-index: 20;
     display: flex;
+    font-weight: bold;
     justify-content: center;
     align-items: center;
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 18px;
     color: rgba(248, 47, 6, 1);
   }
-  .bound-close {
-    background-image: url(../../../assets/images/promotion/hotpromo/2025-cny-lucky-draw/bound-bg-mid.png);
+  .bound-cycle-light {
+    z-index: 1;
+    background-image: url(../../../assets/images/promo/hotpromo/2025-cny-lucky-draw/bound-cycle-light.png);
+    background-size: 100% 100%;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    top: 82%;
-    width: 230px;
-    height: 72px;
+    top: 30%;
+    width: 160px;
+    font-weight: bold;
+    height: 160px;
+  }
+  .bound-close {
+    background-image: url(../../../assets/images/promo/hotpromo/2025-cny-lucky-draw/bound-bg-mid.png);
+    background-size: 100% 100%;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 80%;
+    width: 50%;
+    min-height: 50px;
+    aspect-ratio: 230/72;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 24px;
+    font-size: 22px;
     color: #fff;
 
     div {
@@ -343,16 +424,16 @@ onMounted(() => {
 .new-player-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 26px;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px 40px 40px;
+  padding: 18px 16px 30px;
   border-radius: 12px;
   border: 1px solid #acd4f6;
   box-shadow: 0px 0px 4px 0px #01497b0f;
-  background: url("../../../assets/images/promotion/hotpromo/2025-cny-lucky-draw/content-bg-top.png") top no-repeat,
-    url("../../../assets/images/promotion/hotpromo/2025-cny-lucky-draw/content-bg.png") center no-repeat,
-    url("../../../assets/images/promotion/hotpromo/2025-cny-lucky-draw/content-bg-bottom.png") bottom no-repeat;
+  background: url("../../../assets/images/promo/hotpromo/2025-cny-lucky-draw/bg-top.png") top no-repeat,
+    url("../../../assets/images/promo/hotpromo/2025-cny-lucky-draw/bg-content.png") center no-repeat,
+    url("../../../assets/images/promo/hotpromo/2025-cny-lucky-draw/bg-bottom.png") bottom no-repeat;
   background-size: 100%, 100% 90%, 100%;
 
   .title {
@@ -370,7 +451,7 @@ onMounted(() => {
       display: flex;
       align-items: center;
       gap: 12px;
-      font-size: 28px;
+      font-size: 14px;
       font-weight: 600;
       line-height: 40px;
       color: #0080ff;
@@ -385,35 +466,35 @@ onMounted(() => {
     .rule-block-rule {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
 
       .rule-block-rule__title {
-        width: 180px;
+        width: 85px;
         background: linear-gradient(180deg, #70cbfb 0%, #4aa5ff 49%, #4aa5ff 91.5%, #6ec7fd 100%);
         padding: 3px 0;
         clip-path: polygon(0 50%, 12px 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 12px 100%);
         text-align: center;
-        font-size: 16px;
+        font-size: 12px;
         font-weight: 600;
         line-height: 23.33px;
         color: #fff;
       }
 
       .rule-block-rule__description {
-        font-size: 20px;
+        font-size: 12px;
         font-weight: 400;
-        line-height: 28px;
+        line-height: 18px;
       }
     }
 
     .detail-description {
-      font-size: 20px;
+      font-size: 12px;
       font-weight: 400;
       line-height: 28px;
     }
 
     .hint {
-      font-size: 20px;
+      font-size: 12px;
       color: #ff0000;
     }
   }
@@ -428,27 +509,13 @@ onMounted(() => {
       align-items: center;
       margin-bottom: 8px;
       gap: 10px;
-      font-size: 24px;
+      font-size: 14px;
       font-weight: 600;
       line-height: 29.05px;
     }
 
     .mission-block-mission-wrapper {
       position: relative;
-
-      .smaller-table {
-        width: min-content;
-        min-width: 40%;
-        margin: 10px 0px;
-
-        td {
-          padding: 4px;
-
-          &:first-child {
-            width: 80px;
-          }
-        }
-      }
 
       .mission-block-mission__bg {
         position: absolute;
@@ -475,7 +542,7 @@ onMounted(() => {
           border-bottom: 1px solid #0000001a;
 
           .mission-block-mission-upside-title {
-            font-size: 18px;
+            font-size: 14px;
             font-weight: 400;
             line-height: 18px;
           }
@@ -509,7 +576,7 @@ onMounted(() => {
               flex-direction: column;
 
               .mission-block-mission-downside-description {
-                font-size: 18px;
+                font-size: 14px;
                 font-weight: 400;
                 line-height: 21.78px;
               }
@@ -531,7 +598,7 @@ onMounted(() => {
             width: max-content;
             padding: 11px 16px;
             border-radius: 8px;
-            font-size: 24px;
+            font-size: 12px;
             font-weight: 600;
             line-height: 18px;
             text-align: center;
@@ -565,7 +632,7 @@ onMounted(() => {
           counter-increment: list-counter;
           margin-bottom: 4px;
           list-style-type: none;
-          font-size: 20px;
+          font-size: 12px;
           font-weight: 400;
           line-height: 32px;
 
@@ -580,7 +647,7 @@ onMounted(() => {
             margin-right: 10px;
             background: linear-gradient(180deg, #70cbfb 0%, #4aa5ff 49%, #4aa5ff 91.5%, #6ec7fd 100%);
             border-radius: 50%;
-            font-size: 18px;
+            font-size: 12px;
             font-weight: 700;
             line-height: 24px;
             color: white;
@@ -592,13 +659,37 @@ onMounted(() => {
 }
 
 .bonus-wrapper {
-  width: 1200px;
-  height: 550px;
-  margin: 0 auto;
+  width: 100%;
+  min-height: 255px;
+  aspect-ratio: 702/550;
+  margin: 0 auto 20px;
   position: relative;
 
+  .egg-available-draw {
+    font-size: 17px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+
+    span {
+      padding: 0px 6px;
+    }
+  }
   .bg-image {
     width: 100%;
+    height: 100%;
+    margin: 0 auto 20px;
+    position: relative;
+    .bg-image {
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  }
+  .popout-close {
     position: absolute;
     top: 0;
     left: 0;
@@ -608,44 +699,53 @@ onMounted(() => {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    top: 50px;
-
-    width: 438px;
-    min-height: 88px;
-    aspect-ratio: 876/160;
-    background-image: url("../../../assets/images/promotion/hotpromo/2025-cny-lucky-draw/bgtitle.png");
+    top: 20px;
+    width: 80%;
+    aspect-ratio: 488/88;
+    min-height: 20px;
+    background-image: url("../../../assets/images/promo/hotpromo/2025-cny-lucky-draw/title-img.png");
     background-repeat: no-repeat;
     background-size: 100% auto;
     color: #fff;
 
     .egg-available-draw {
-      font-size: 24px;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
       white-space: nowrap;
-      span {
-        padding: 0px 6px;
-      }
     }
   }
 
   .bg-egg {
     position: absolute;
     left: 50%;
-    width: 600px;
     transform: translateX(-50%);
-    bottom: 0px;
+    top: 26%;
     cursor: pointer;
 
-    &:hover {
-      opacity: 0.9;
-    }
     &:active {
       filter: brightness(0.8);
+      top: 27%;
     }
   }
+  .egg-button {
+    position: absolute;
+    background-image: url("../../../assets/images/promo/hotpromo/2025-cny-lucky-draw/btn-btn.png");
+    background-size: 100% auto;
+    width: 160px;
+    min-height: 50px;
+    bottom: 12px;
+    aspect-ratio: 360/117;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 21px;
+    left: 50%;
+    margin-left: -74px;
+    text-transform: capitalize;
+  }
+}
+.popout-close {
+  position: absolute;
+  right: 0px;
 }
 </style>

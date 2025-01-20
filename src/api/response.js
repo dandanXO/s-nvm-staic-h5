@@ -1,7 +1,7 @@
 export const ResponseCode = {
   SUCCESS: 0,
+  EMPTY_PROMO_POPOUT: 908,
   ERROR_SYSTEM: 500,
-  TOO_OFTEN_REQUEST: 504,
   ERROR_BAD_REQUEST: 400,
   ERROR_UNAUTHORIZED: 401,
   ERROR_FORBIDDEN: 403,
@@ -14,18 +14,6 @@ export const ResponseCode = {
   ERROR_TOKEN_EXPIRED: 602,
   ERROR_TOKEN_MISSED: 603,
   ERROR_TOKEN_LOGGED: 604,
-  ERROR_AMOUNT_DEPOSIT: 11003,
-  ERROR_AMOUNT_PRIVILEGE_DEPOSIT: 11004,
-  ERROR_WITHDRAW_PASSWORD_NOT_MATCH: 12100
+  ERROR_PROMO_NOT_POUND: 31000,
+  ERROR_PROMO_NOT_START: 37001
 };
-
-const skipCode = [11002];
-
-export function SkipErrorCode(code) {
-  for (let i = 0; i < skipCode.length; i++) {
-    if (skipCode[i] === code) {
-      return 1;
-    }
-  }
-  return 0;
-}

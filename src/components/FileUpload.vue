@@ -1,78 +1,98 @@
 <template>
-  <el-space>
-    <el-input :readonly="true" v-model.number="ruleForm.icon" autocomplete="off" />
-    <!-- eslint-disable -->
-    <input id="uploadFile" type="file" ref="input" style="display: none" accept="image/*"
-      @change="attachPhoto($event, 'payment')" />
-    <el-button size="small" class="common-btn" @click="$refs.input.click()">
-      {{ $t('account.upload_image') }}
-    </el-button></el-space>
-  <!-- <el-input v-model.number="ruleForm.icon" autocomplete="off" /> -->
+  <q-file
+      name="upload_img"
+      v-model="file"
+      class="q-pt-md"
+      filled
+      :label="$t('lang.upload_image')"
+      color="white"
+  >
+    <template v-slot:prepend>
+      <q-icon name="cloud_upload"/>
+    </template>
+    <!-- Display error message -->
+    <!-- <template v-slot:error="{ error }">
+      <div class="text-negative">{{ error }}</div>
+    </template> -->
+  </q-file>
 </template>
 
 <script>
-import { defineComponent, reactive } from "vue";
-
-import { uploadImage } from '@/api/image';
-import { ElMessage } from "element-plus";
+import {ref, defineComponent, watch} from "vue";
+import {userStore} from "src/stores";
+import {useQuasar} from "quasar";
+import {getRndInteger} from "boot/utils";
 import { useI18n } from "vue-i18n";
+
 export default defineComponent({
   emits: ["photoResponse"],
+  name: "UploadExample",
+  setup: (props, {emit}) => {
+    const store = userStore();
+    const {t} = useI18n()
 
-  setup: (props, { emit }) => {
-    const ruleForm = reactive({
-      icon: null
-    })
-    const { t } = useI18n();
-    const clear = () => {
-      ruleForm.icon = null
-      emit("photoResponse", null);
-    }
-    const attachPhoto = async (event, type) => {
-      const files = event.target.files[0]
-      const allowFileType = ['image/jpeg', 'image/png', 'image/gif']
-      const dirPayment = 'payment'
-      const dirPaymentLabel = 'payment/label'
+    var rstArray = Object.values(process.env.RST_API);
+    var rstApi = rstArray[getRndInteger(0, rstArray.length)];
 
-      if (!allowFileType.find(ftype => ftype.includes(files.type))) {
-        ElMessage({
-          message: t('account.upload_fail_please_try'),
-          type: 'error',
-        })
-      } else {
-        var formData = new FormData()
-        formData.append('files', files)
-        if (type === 'payment') {
-          formData.append('dir', dirPayment)
-        } else {
-          formData.append('dir', dirPaymentLabel)
-        }
-        formData.append('overwrite', false)
+    const action = rstApi + '/session/image/uploadOrder?token=' + store.token;
+    const $q = useQuasar();
+    const file = ref();
+    watch(file, (newValue, oldValue) => {
+      uploadFile(newValue);
+    });
+    const uploadFile = async (uploadedItem) => {
+      if (uploadedItem) {
+        const formData = new FormData();
+        formData.append("files", file.value);
         formData.append('includeDir', true)
-
-        const data = await uploadImage(formData)
-        if (data.code === 0) {
-          if (type === 'payment') {
-            ruleForm.icon = data.data
+        try {
+          const response = await fetch(
+              `${rstApi}/session/image/uploadOrder`,
+              {
+                method: "POST",
+                body: formData,
+                headers: {
+                  token: `${store.token}`
+                }
+              }
+          );
+          const data = await response.json();
+          if (data.code === 0) {
             emit("photoResponse", data.data);
+            $q.notify({
+              type: "positive",
+              position: "top",
+              message: `${file.value.name} ` + t('lang.upload_success'),
+              icon: "check_circle_outline"
+            });
           } else {
-            ruleForm.promoIcon = data.data
+            $q.notify({
+              type: "negative",
+              position: "top",
+              message: `${file.value.name} `  + t('lang.upload_fail_please_try'),
+              icon: "report_problem"
+            });
+            file.value = null;
           }
-        } else {
-          ElMessage({
-            message: t('account.upload_fail_please_try'),
-            type: 'error',
-          })
+        } catch (error) {
+          console.error(error);
         }
       }
-    }
+    };
 
     return {
-      attachPhoto,
-      ruleForm,
-      clear
-    }
-  }
+      file,
+      action,
+      // handleChange,
+      uploadFile,
+      t
+    };
+  },
 });
-
 </script>
+
+<style scoped>
+.q-uploader .q-uploader-upload-btn {
+  color: #ffffff !important;
+}
+</style>

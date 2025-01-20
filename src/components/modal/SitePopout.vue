@@ -1,65 +1,83 @@
 <template>
   <div class="container">
-    <div class="header">{{ $t("sitePopout.sitePopout") }}</div>
-    <div class="content">
-      <div class="left">
-        <div
-          class="left-item"
-          :class="index === selectedItemIndex ? 'active' : ''"
-          v-for="(popoutListItem, index) in popoutList"
-          @click="selectedItemIndex = index"
-        >
-          <div class="title">{{ popoutListItem.title }}</div>
-          <div class="period" v-if="popoutListItem.displayStartTime && popoutListItem.displayEndTime">
-            {{ moment(popoutListItem.displayStartTime).format("DD/MM/YYYY") }} -
-            {{ moment(popoutListItem.displayEndTime).format("DD/MM/YYYY") }}
+    <q-carousel
+      class="site-popout-carousel"
+      v-model="selectedItemIndex"
+      transition-prev="scale"
+      transition-next="scale"
+      swipeable
+      animated
+      navigation
+      control-color="blue"
+    >
+      <q-carousel-slide
+        :name="index"
+        class="column no-wrap flex-start"
+        v-for="(popoutListItem, index) in popoutList"
+        :key="index"
+      >
+        <div class="content">
+          <div class="right">
+            <div v-if="selectedItem?.desktopImgUrl">
+              <img
+                @click="onClickPopoutImg(`/promotion?name=${selectedItem.path}`)"
+                :src="`${imgURL}${selectedItem.desktopImgUrl}`"
+              />
+            </div>
+          </div>
+          <div class="left">
+            <div class="left-item active">
+              <div class="title">{{ popoutListItem.title }}</div>
+              <div class="period" v-if="popoutListItem.displayStartTime && popoutListItem.displayEndTime">
+                {{ moment(popoutListItem.displayStartTime).format("DD/MM/YYYY") }} -
+                {{ moment(popoutListItem.displayEndTime).format("DD/MM/YYYY") }}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="right">
-        <div v-if="selectedItem?.desktopImgUrl">
-          <img
-            @click="onClickPopoutImg(`/promotion?name=${selectedItem.path}`)"
-            :src="`${imgURL}${selectedItem.desktopImgUrl}`"
-          />
-          <!-- <router-link :to="`/promotion?name=${selectedItem.path}`" class="check-details-btn">{{ $t('sitePopout.checkDetails') }}</router-link> -->
-        </div>
-      </div>
-    </div>
+      </q-carousel-slide>
+    </q-carousel>
   </div>
+  <img @click="props.closePopout" class="close-btn" src="../../assets/images/home/site-popout/close-btn.png" />
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { getSitePopoutList } from "@/api/personal/common";
 import { useLocalStorage } from "@vueuse/core";
+import { api } from "boot/axios";
 import moment from "moment";
 import { useRouter } from "vue-router";
-import { uiStore } from "@/store/ui";
-import { EDITION } from "@/constant/edition";
+import { EDITION } from "src/constant/edition";
 
+import { useUI } from "src/stores/ui";
+const ui = useUI();
 const router = useRouter();
-const ui = uiStore();
-
+const props = defineProps(["closePopout"]);
 const popoutList = ref([]);
 const selectedItemIndex = ref();
-
 const selectedItem = computed(() =>
   popoutList.value.length > 0 ? popoutList.value?.[selectedItemIndex.value] : undefined
 );
-const imgURL = useLocalStorage("IMAGE_CDN", process.env.VUE_APP_IMAGE_CDN).value + "/promo/";
+const imgURL = useLocalStorage("IMAGE_CDN", process.env.IMAGE_CDN).value + "/promo/";
 
 const onClickPopoutImg = (path) => {
   router.push(path);
+  props.closePopout();
 };
 
 onMounted(() => {
-  let siteType = "main";
+  let siteType;
   switch (ui.edition) {
     case EDITION.SLOT:
       siteType = "slot";
+      break;
+    case EDITION.NORMAL:
+      siteType = "main";
+      break;
+    default:
+    // siteType = "HOME";
   }
-  getSitePopoutList(siteType).then((res) => {
+  api.get(`/member/site-popout-list?siteType=${siteType}`).then((res) => {
     if (res.code === 0) {
       popoutList.value = res.data;
 
@@ -77,22 +95,61 @@ onMounted(() => {
     padding: 0 !important;
   }
 }
+
+.site-popout-carousel {
+  background: transparent;
+  height: 100%;
+  width: 100%;
+  .q-carousel__slides-container {
+    height: 100% !important;
+  }
+  .q-carousel__control {
+    bottom: 5vw !important;
+  }
+
+  .q-carousel__navigation-icon--inactive {
+    color: #bcc9e5 !important;
+  }
+}
 </style>
 
 <style lang="scss" scoped>
+.close-btn {
+  margin: 3% auto;
+  display: flex;
+  height: 35px;
+}
+
 .container {
   display: flex;
   flex-direction: column;
   // background-color: white;
   align-items: center;
-  font-family: "PingFang SC";
+  font-family: "SF Pro";
   background: url("../../assets/images/home/site-popout/popout-bg.png") no-repeat center center;
-  // background-size: 100% 100%;
-  // aspect-ratio: 1826 / 1156;
-  // padding: 8% 5% 0% 5%;
-  padding: 8% 4% 5% 4%;
-  background-size: 100% 100%;
-  width: 830px;
+  justify-content: center;
+  background-size: contain;
+  transform: scale(0.9);
+
+  // aspect-ratio: 644 / 837;
+  // padding: 10% 2%;
+  // min-height: 490px;
+
+  height: 65vh;
+  max-height: 420px;
+  margin: auto;
+  @media (max-width: 430px) {
+    max-height: 440px;
+  }
+  @media (max-width: 414px) {
+    max-height: 430px;
+  }
+  @media (max-width: 390px) {
+    max-height: 420px;
+  }
+  @media (max-width: 375px) {
+    max-height: 410px;
+  }
 
   .header {
     border-bottom: 1px solid black;
@@ -105,43 +162,26 @@ onMounted(() => {
     font-weight: 700;
     line-height: 1rem;
     visibility: hidden;
-    display: none;
   }
 
   .content {
     // display: grid;
-    // grid-template-columns: 1.5fr 2fr;
-    // grid-template-columns: 0.7fr 1.7fr;
-    width: 100%;
-    height: 100%;
-    min-height: 300px;
-    max-height: 400px;
-    gap: 10px;
+    // grid-template-rows: 1fr auto;
     display: flex;
-    overflow: auto;
-
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    padding-top: 30px;
     .left {
-      flex: 2;
       display: flex;
       flex-direction: column;
       cursor: pointer;
-      height: 300px;
-      overflow: auto;
-      height: 100%;
-      gap: 10px;
-
-      // &::-webkit-scrollbar {
-      //   -webkit-appearance: none;
-      //   width: 8px;
-      //   background-color: #ededed;
-      // }
-
-      // &::-webkit-scrollbar-thumb {
-      //   border-radius: 4px;
-      //   background-color: #D1D1D1;
-      //   border: 1px solid #808080;
-      //   box-shadow: 0 0 1px rgba(255, 255, 255, .5);
-      // }
+      width: 95%;
+      // max-width: 300px;
+      // margin: 0 auto 25px;
+      margin: 0 auto 2vw;
+      justify-content: center;
+      align-items: center;
 
       .left-item {
         font-size: 1rem;
@@ -149,18 +189,20 @@ onMounted(() => {
         flex-direction: column;
         align-items: flex-start;
         justify-content: center;
-        padding: 6%;
+        padding: 3% 5%;
         font-weight: 700;
         background: url("../../assets/images/home/site-popout/list-item-bg.png") no-repeat center center;
         background-size: 100% 100%;
-        // aspect-ratio: 300 / 100;
+        // aspect-ratio: 300 / 50;
+        width: 100%;
+        max-width: 300px;
 
         .title {
           font-family: "SF Pro";
-          font-size: 14px;
+          color: #2792fd;
+          font-size: 16px;
           font-weight: 700;
-          line-height: 20px;
-          color: #414252;
+          line-height: 30px;
           width: 100%;
           white-space: nowrap;
           overflow: hidden;
@@ -169,19 +211,15 @@ onMounted(() => {
 
         .period {
           font-family: "SF Pro";
-          font-size: 12px;
-          font-weight: 400;
-          line-height: 17px;
           color: #414252;
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 25px;
         }
 
         &.active {
           background: url("../../assets/images/home/site-popout/list-item-bg-active.png") no-repeat center center;
           background-size: 100% 100%;
-
-          .title {
-            color: #2792fd;
-          }
         }
       }
     }
@@ -189,16 +227,18 @@ onMounted(() => {
     .right {
       position: relative;
       height: 100%;
-      // border-radius: 15px;
-      // border: 2px solid #2cbdff;
-      overflow: hidden;
-      max-width: 475px;
-      flex: 5;
-
-      text-align: right;
       > div {
+        text-align: center;
+        height: 60vw;
+        max-height: 240px;
         width: 100%;
-        height: 100%;
+        img {
+          // height: 100%;
+          width: unset;
+          height: 100%;
+          border-radius: 18px;
+          border: 2px solid #36afe3;
+        }
       }
       .check-details-btn {
         position: absolute;
@@ -222,13 +262,8 @@ onMounted(() => {
 
       img {
         // width: 100%;
-        height: 100%;
-        // transform: scale(1.01);
         cursor: pointer;
-        border-radius: 18px;
-        border: 2px solid #36afe3;
-        max-height: 390px;
-
+        // height: 100%;
         &:hover {
           filter: brightness(0.9);
         }

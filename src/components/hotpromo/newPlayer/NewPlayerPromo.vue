@@ -1,6 +1,6 @@
 <template>
   <div class="new-player-wrapper">
-    <img class="title" src="@/assets/images/promotion/hotpromo/newPlayer/title.png" />
+    <img class="title" src="@/assets/images/promo/hotpromo/newPlayer/title.png" />
 
     <div class="rule-block">
       <div class="rule-block-rule">
@@ -13,7 +13,7 @@
       </div>
       <div class="detail-wrapper">
         <h3 class="detail-title">
-          <img class="detail-title__icon" src="@/assets/images/promotion/hotpromo/newPlayer/arrow-right.svg" />
+          <img class="detail-title__icon" src="@/assets/images/promo/hotpromo/newPlayer/arrow-right.svg" />
           Chi tiết khuyến mãi
         </h3>
         <span class="detail-description">
@@ -25,20 +25,15 @@
 
     <div class="mission-block">
       <h3 class="mission-block-title">
-        <img class="detail-title__icon" src="@/assets/images/promotion/hotpromo/newPlayer/gift.svg" />
+        <img class="detail-title__icon" src="@/assets/images/promo/hotpromo/newPlayer/gift.svg" />
         NHIỆM VỤ TÂN THỦ
       </h3>
       <div class="mission-block-mission-wrapper">
-        <img
-          class="mission-block-mission__bg"
-          src="@/assets/images/promotion/hotpromo/newPlayer/new-player-mission-bg.png"
-        />
-
         <div v-for="(mission, index) in missions" class="mission-block-mission" :key="index">
           <div class="mission-block-mission-upside-wrapper">
             <span class="mission-block-mission-upside-title">Nhiệm vụ {{ index + 1 }}</span>
             <div class="mission-block-mission-upside-reward-wrapper">
-              <img src="@/assets/images/promotion/hotpromo/newPlayer/coin.svg" />
+              <img src="@/assets/images/promo/hotpromo/newPlayer/coin.svg" />
               <span class="mission-block-mission-upside-reward-amount">{{ mission.reward }} VNDP</span>
             </div>
           </div>
@@ -47,11 +42,13 @@
               <img :src="mission.icon" />
               <div class="mission-block-mission-downside-description-inner-wrapper">
                 <span class="mission-block-mission-downside-description">{{ mission.description }}</span>
-                <span class="mission-block-mission-downside-description-progress">
-                  Tiến độ hoàn thành ({{ mission.missionProgress }})
-                </span>
               </div>
             </div>
+          </div>
+          <div class="mission-block-mission-third-block">
+            <span class="mission-block-mission-third-block-description-progress">
+              Tiến độ hoàn thành ({{ mission.missionProgress }})
+            </span>
             <button
               class="mission-block-mission-btn"
               :disabled="mission.status !== 'Claim'"
@@ -68,7 +65,7 @@
 
     <div class="term-block detail-wrapper">
       <h3 class="detail-title">
-        <img class="detail-title__icon" src="@/assets/images/promotion/hotpromo/newPlayer/arrow-right.svg" />
+        <img class="detail-title__icon" src="@/assets/images/promo/hotpromo/newPlayer/arrow-right.svg" />
         Điều khoản và điều kiện
       </h3>
       <div class="detail-description">
@@ -85,7 +82,7 @@
             cầu rút.
           </li>
           <li>
-            Tất cả cược HÒA, cược HỦY, cược 2 BÊN, vé cược đặt tại tỷ lệ cược: DEC < 1.75, MY -0.6 đến 0.75, Thể thao
+            Tất cả cược HÒA, cược HỦY, cược 2 BÊN, vé cược đặt tại tỷ lệ cược: DEC &lt; 1.75, MY -0.6 đến 0.75, Thể thao
             ảo, Đua ngựa, Number Game sẽ không được áp dụng cho chương trình này. Các tài khoản có cùng IP hoặc thông
             tin dữ liệu tương tự sẽ không được tham gia chương trình khuyến mãi này
           </li>
@@ -102,15 +99,16 @@
 </template>
 <script setup>
 import { onMounted, ref } from "vue";
+import { useQuasar } from "quasar";
 import { useI18n } from "vue-i18n";
-import { ElMessage } from "element-plus";
-import { getNewPlayerMission, submitNewPlayerMission } from "@/api/promotion/newPlayer";
+import { getNewPlayerMission, submitNewPlayerMission } from "@/api/promo/newPlayer";
 
-import AccountSvg from "@/assets/images/promotion/hotpromo/newPlayer/account.svg";
-import transferSvg from "@/assets/images/promotion/hotpromo/newPlayer/transfer.svg";
-import depositSvg from "@/assets/images/promotion/hotpromo/newPlayer/deposit.svg";
-import walletSvg from "@/assets/images/promotion/hotpromo/newPlayer/wallet.svg";
+import AccountSvg from "@/assets/images/promo/hotpromo/newPlayer/account.svg";
+import transferSvg from "@/assets/images/promo/hotpromo/newPlayer/transfer.svg";
+import depositSvg from "@/assets/images/promo/hotpromo/newPlayer/deposit.svg";
+import walletSvg from "@/assets/images/promo/hotpromo/newPlayer/wallet.svg";
 
+const $q = useQuasar();
 const { t } = useI18n();
 
 const missions = ref([
@@ -152,10 +150,20 @@ const handleClaimClick = (mission, index) => {
   if (mission.status !== "Claim") return;
   submitNewPlayerMission(mission.code).then((res) => {
     if (res.code === 0) {
-      ElMessage.success(t("promo.new_player_success"));
+      $q.notify({
+        type: "positive",
+        position: "top",
+        message: t("lang.new_player_successfully"),
+        icon: "check_circle_outline"
+      });
       missions.value[index].status = "Claimed";
     } else {
-      ElMessage.error(res.message);
+      $q.notify({
+        color: "negative",
+        position: "top",
+        message: res.message,
+        icon: "report_problem"
+      });
     }
   });
 };
@@ -169,8 +177,6 @@ onMounted(() => {
         mission.status = data[`available${index + 1}`];
         mission.reward = data[`task${index + 1}amount`];
       });
-    } else {
-      ElMessage.error(res.message);
     }
   });
 });
@@ -196,16 +202,20 @@ onMounted(() => {
   .detail-wrapper {
     background-color: #fff;
     border: 1px solid #acd4f6;
-    padding: 20px;
+    padding: 12px;
     border-radius: 12px;
     .detail-title {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 28px;
+      gap: 3px;
+      margin: 0 0 4px;
+      font-size: 1rem;
       font-weight: 600;
-      line-height: 40px;
+      line-height: 1.25rem;
       color: #0080ff;
+      .detail-title__icon {
+        width: unset;
+      }
     }
   }
 
@@ -218,26 +228,27 @@ onMounted(() => {
       align-items: center;
       gap: 12px;
       .rule-block-rule__title {
-        width: 120px;
+        flex-shrink: 0;
+        width: 80px;
         background: linear-gradient(180deg, #70cbfb 0%, #4aa5ff 49%, #4aa5ff 91.5%, #6ec7fd 100%);
         padding: 3px 0;
         clip-path: polygon(0 50%, 12px 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 12px 100%);
         text-align: center;
-        font-size: 16px;
+        font-size: 0.75rem;
         font-weight: 600;
-        line-height: 23.33px;
+        line-height: 1rem;
         color: #fff;
       }
       .rule-block-rule__description {
-        font-size: 20px;
+        font-size: 0.75rem;
         font-weight: 400;
-        line-height: 28px;
+        line-height: 1rem;
       }
     }
     .detail-description {
-      font-size: 20px;
+      font-size: 0.75rem;
       font-weight: 400;
-      line-height: 28px;
+      line-height: 1rem;
     }
   }
 
@@ -248,11 +259,16 @@ onMounted(() => {
     .mission-block-title {
       display: flex;
       align-items: center;
-      margin-bottom: 8px;
+      margin-top: 0;
+      margin-bottom: 12px;
       gap: 10px;
-      font-size: 24px;
+      font-size: 1rem;
       font-weight: 600;
-      line-height: 29.05px;
+      line-height: 1.25rem;
+      .detail-title__icon {
+        width: unset;
+        margin-bottom: 0;
+      }
     }
     .mission-block-mission-wrapper {
       position: relative;
@@ -268,29 +284,32 @@ onMounted(() => {
         position: relative;
         background-color: #fff;
         border: 1px solid #acd4f6;
-        padding: 12px 20px;
+        padding: 8px 12px;
         border-radius: 12px;
         margin-bottom: 12px;
+        img {
+          width: unset;
+        }
         .mission-block-mission-upside-wrapper {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding-bottom: 10px;
+          padding-bottom: 8px;
           margin-bottom: 12px;
           border-bottom: 1px solid #0000001a;
           .mission-block-mission-upside-title {
-            font-size: 18px;
+            font-size: 0.875rem;
             font-weight: 400;
-            line-height: 18px;
+            line-height: 1.125rem;
           }
           .mission-block-mission-upside-reward-wrapper {
             display: flex;
             align-items: center;
             gap: 6px;
             .mission-block-mission-upside-reward-amount {
-              font-size: 24px;
+              font-size: 0.875rem;
               font-weight: 600;
-              line-height: 18px;
+              line-height: 1.25rem;
               color: #ff8e15;
             }
           }
@@ -299,6 +318,9 @@ onMounted(() => {
           display: flex;
           align-items: center;
           justify-content: space-between;
+          padding-bottom: 12px;
+          margin-bottom: 8px;
+          border-bottom: 1px solid #0000001a;
           .mission-block-mission-downside-description-outer-wrapper {
             display: flex;
             gap: 12px;
@@ -307,29 +329,34 @@ onMounted(() => {
               display: flex;
               flex-direction: column;
               .mission-block-mission-downside-description {
-                font-size: 18px;
+                font-size: 0.75rem;
                 font-weight: 400;
-                line-height: 21.78px;
-              }
-              .mission-block-mission-downside-description-progress {
-                background: linear-gradient(90deg, #41b9ff 8.15%, #0085e8 92.42%);
-                background-clip: text;
-                font-size: 14px;
-                font-weight: 700;
-                line-height: 18px;
-                color: transparent;
+                line-height: 1rem;
               }
             }
           }
+        }
+        .mission-block-mission-third-block {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          .mission-block-mission-third-block-description-progress {
+            background: linear-gradient(90deg, #41b9ff 8.15%, #0085e8 92.42%);
+            background-clip: text;
+            font-size: 0.75rem;
+            font-weight: 700;
+            line-height: 1.125rem;
+            color: transparent;
+          }
           .mission-block-mission-btn {
             background: linear-gradient(90deg, #41b9ff 8.15%, #0085e8 92.42%);
-            min-width: 128px;
-            width: max-content;
-            padding: 11px 16px;
+            min-width: 76px;
+            padding: 4px 12px;
+            border: none;
             border-radius: 8px;
-            font-size: 24px;
+            font-size: 0.75rem;
             font-weight: 600;
-            line-height: 18px;
+            line-height: 1.125rem;
             text-align: center;
             color: #fff;
             &:not([disabled]) {
@@ -356,25 +383,25 @@ onMounted(() => {
           display: flex;
           align-items: baseline;
           counter-increment: list-counter;
-          margin-bottom: 4px;
+          margin-bottom: 4px !important;
           list-style-type: none;
-          font-size: 20px;
+          font-size: 0.75rem;
           font-weight: 400;
-          line-height: 32px;
+          line-height: 1.125rem;
           &::before {
             display: flex;
             flex-shrink: 0;
             justify-content: center;
             align-items: center;
             content: counter(list-counter);
-            width: 24px;
-            height: 24px;
+            width: 16px;
+            height: 16px;
             margin-right: 10px;
             background: linear-gradient(180deg, #70cbfb 0%, #4aa5ff 49%, #4aa5ff 91.5%, #6ec7fd 100%);
             border-radius: 50%;
-            font-size: 18px;
+            font-size: 0.75rem;
             font-weight: 700;
-            line-height: 24px;
+            line-height: 1.125rem;
             color: white;
           }
         }

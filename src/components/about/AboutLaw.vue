@@ -1,22 +1,22 @@
 <template>
   <div class="about-info">
     <div class="inner">
-                <ul>   
-                  <p>{{ $t('about.generalTermsMessage') }}</p>
-                  <li>{{ $t('about.ageRequirement') }}</li>
-                  <li>{{ $t('about.singleAccount') }}</li>
-                  <li>{{ $t('about.personalInformation2') }}</li>
-                  <li>{{ $t('about.checkAccountBalance') }}</li>
-                  <li>{{ $t('about.accountSecurity') }}</li>
-                  <li>{{ $t('about.depositInstructions') }}</li>
-                  <li>{{ $t('about.accessFromRestrictedArea') }}</li>
-                  <li>{{ $t('about.entertainmentPurpose') }}</li>
-                  <li>{{ $t('about.withdrawalRequest') }}</li>
-                  <li>{{ $t('about.honestyPolicy') }}</li>
-                  <br>
-                  <p>{{ $t('about.suspensionPolicyMessage') }}</p>
-                </ul>
-            </div>
+      <ul>
+        <p>{{ $t("lang.about.generalTermsMessage") }}</p>
+        <li>{{ $t("lang.about.ageRequirement") }}</li>
+        <li>{{ $t("lang.about.singleAccount") }}</li>
+        <li>{{ $t("lang.about.personalInformation2") }}</li>
+        <li>{{ $t("lang.about.checkAccountBalance") }}</li>
+        <li>{{ $t("lang.about.accountSecurity") }}</li>
+        <li>{{ $t("lang.about.depositInstructions") }}</li>
+        <li>{{ $t("lang.about.accessFromRestrictedArea") }}</li>
+        <li>{{ $t("lang.about.entertainmentPurpose") }}</li>
+        <li>{{ $t("lang.about.withdrawalRequest") }}</li>
+        <li>{{ $t("lang.about.honestyPolicy") }}</li>
+        <br />
+        <p>{{ $t("lang.about.suspensionPolicyMessage") }}</p>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -24,7 +24,7 @@
 
 <style scoped lang="scss">
 .about-info {
-  ul  {
+  ul {
     margin: 0;
     padding: 15px;
   }

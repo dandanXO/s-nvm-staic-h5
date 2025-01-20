@@ -1,11 +1,11 @@
-import { server } from "@/utils/request";
+import { api, eventapi } from "boot/axios";
 
 export function getRecommendPrivilegeRecord(params) {
-  return server.EVENT.get("/refer-friend-rebate/record", {
+  return eventapi.get("/refer-friend-rebate/record", {
     params
   });
 }
 
 export function getRebateInfo() {
-  return server.EVENT.get("/refer-friend-rebate/info");
+  return eventapi.get("/refer-friend-rebate/info");
 }

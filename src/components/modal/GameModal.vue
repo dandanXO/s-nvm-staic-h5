@@ -1,191 +1,228 @@
 <template>
-  <el-dialog v-model="visible" width="100%" class="full-modal" :title="title" destroyOnClose :afterClose="destroyGame">
-    <TFLoading v-if="logoShow"></TFLoading>
-    <template v-if="transferInfo.platform === 'PG'">
-      <iframe
-        allow="fullscreen"
-        @load="loadGame()"
-        v-show="!logoShow"
-        v-bind:srcdoc="src"
-        id="game-iframe"
-        :scrolling="iframeScroll ? 'yes' : 'no'"
-        frameborder="0"
-        class="game-iframe"
-      ></iframe>
-    </template>
-    <template v-else>
-      <iframe
-        allow="fullscreen"
-        @load="loadGame()"
-        v-show="!logoShow"
-        :src="src"
-        id="game-iframe"
-        :scrolling="iframeScroll ? 'yes' : 'no'"
-        frameborder="0"
-        class="game-iframe"
-      ></iframe>
-    </template>
-    <div @click="showDrawer()" class="drawer-btn" :class="{ active: isMobileDrawerActive }">Quick Actions</div>
+  <q-scroll-area>
+    <q-dialog v-model="visible" v-if="visible" class="gameDialog" full-height full-width>
+      <!--      <q-page-sticky id="sticky-item" position="bottom-right" style="z-index:999999;" :offset="fabPos"-->
+      <!--                     v-touch-pan.prevent.mouse="moveFab"-->
+      <!--      >-->
+      <!--        <q-btn-->
+      <!--            @click="closeDialog()"-->
+      <!--            icon="close"-->
+      <!--            direction="up"-->
+      <!--            color="decent"-->
+      <!--            class="bg-brightbtn close-btn"-->
+      <!--            rounded-->
+      <!--        >-->
+      <!--        </q-btn>-->
+      <!--      </q-page-sticky>-->
+      <!-- <q-toolbar>
+      <q-avatar>
+        <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg" />
+      </q-avatar>
 
-    <div :class="{ active: isMobileDrawerActive }" class="additional-buttons desktopview" v-if="!drawerVisible">
-      <!-- <div class="numbers">
-        <div class="amt-numbers">โอนด่วน</div>
-        <div
-          v-for="(val, valIndex) in values"
-          :key="valIndex"
-          class="num"
-          @click="submitTransfer(val)"
-          :class="{ animate: isClicked === val }"
-        >
-          {{ val }}
-        </div>
-      </div> -->
-      <div>
-        <span class="bottom-button" @click="showDrawer">{{ $t("deposit.depositMoney") }}</span>
-      </div>
+      <q-toolbar-title
+        ><span class="text-weight-bold">Quasar</span> Framework</q-toolbar-title
+      >
 
-      <span class="copy-button" @click="copyTo" @blur="changeText">{{ copyText }}</span>
-    </div>
-    <el-drawer
-      :append-to-body="true"
-      style="width: 40vw; min-width: 500px"
-      :placement="'right'"
-      v-model="drawerVisible"
-      :get-container="false"
-      :style="{ position: 'absolute', overflow: 'hidden' }"
-      @close="onClose"
-      :closable="true"
-      :title="$t('deposit.quickDeposit')"
-    >
-      <!-- <template #extra>
-        <el-button style="margin-right: 8px" @click="onClose">Cancel</el-button>
-        <el-button type="primary" @click="onClose">Submit</el-button>
-      </template> -->
-      <div class="mobileshow">
-        <!-- <div class="button-group">
-          <div
-            @click="quickTransferTab = true"
-            class="common-btn"
-            :class="{ active: quickTransferTab }"
-          >
-            โอนด่วน
-          </div>
-          <div
-            @click="quickTransferTab = false"
-            class="common-btn"
-            :class="{ active: !quickTransferTab }"
-          >
-            Bank Transfer
-          </div>
-        </div> -->
-        <template v-if="quickTransferTab">
-          <div class="numbers">
-            <div class="instruction">Transfer amount to platform</div>
+      <q-btn flat round dense icon="close" v-close-popup />
+    </q-toolbar> -->
+      <q-toolbar>
+        <!--        <div class="topActions">-->
+        <!--          <q-toolbar-title></q-toolbar-title>-->
+        <!--          <q-btn-->
+        <!--              v-if="!drawerVisible"-->
+        <!--              flat-->
+        <!--              @click="closeDialog()"-->
+        <!--              round-->
+        <!--              dense-->
+        <!--              icon="close"-->
+        <!--          />-->
+        <!--          <q-btn-->
+        <!--              v-if="!drawerVisible"-->
+        <!--              flat-->
+        <!--              @click="drawerVisible = !drawerVisible"-->
+        <!--              round-->
+        <!--              dense-->
+        <!--              icon="menu_open"-->
+        <!--          />-->
+        <!--          <q-btn-->
+        <!--              v-if="drawerVisible"-->
+        <!--              flat-->
+        <!--              @click="drawerVisible = !drawerVisible"-->
+        <!--              round-->
+        <!--              dense-->
+        <!--              icon="read_more"-->
+        <!--          />-->
+        <!--        </div>-->
 
-            <div
-              v-for="(val, valIndex) in values"
-              :key="valIndex"
-              class="num"
-              @click="submitTransfer(val)"
-              :class="{ animate: isClicked === val }"
-            >
-              {{ val }}
-            </div>
-          </div>
+        <template v-if="transferInfo.platform === 'PG'">
+          <iframe
+            @load="loadGame()"
+            v-show="!logoShow"
+            v-bind:srcdoc="src"
+            id="game-iframe"
+            scrolling="no"
+            frameborder="0"
+            class="game-iframe"
+          ></iframe>
         </template>
-      </div>
+        <template v-else>
+          <iframe
+            @load="loadGame()"
+            v-show="!logoShow"
+            :src="src"
+            id="game-iframe"
+            scrolling="no"
+            frameborder="0"
+            class="game-iframe"
+          ></iframe>
+        </template>
+        <!--        <q-drawer-->
+        <!--            v-model="drawerVisible"-->
+        <!--            :breakpoint="500"-->
+        <!--            overlay-->
+        <!--            bordered-->
+        <!--            class="bg-primary"-->
+        <!--            side="right"-->
+        <!--        >-->
+        <!--          <div class="q-pa-sm q-pt-sm">-->
+        <!--            <div>-->
+        <!--              &lt;!&ndash; Uncomment for quick Transfer &ndash;&gt;-->
+        <!--              &lt;!&ndash; <q-btn-group push>-->
+        <!--                <q-btn-->
+        <!--                  size="sm"-->
+        <!--                  :color="quickTransferTab ? 'white' : 'primary'"-->
+        <!--                  glossy-->
+        <!--                  :text-color="quickTransferTab ? 'black' : 'white'"-->
+        <!--                  push-->
+        <!--                  label="Quick Transfer"-->
+        <!--                  icon="multiple_stop"-->
+        <!--                  @click="quickTransferTab = true"-->
+        <!--                />-->
 
-      <span v-if="!quickTransferTab">
-        <!-- <div class="">
-          <span class="title">快速存款</span>
-        </div> -->
-        <DepositComponent />
-      </span>
-    </el-drawer>
-  </el-dialog>
-  <el-dialog
-    v-model="visibleComingSoon"
-    :footer="null"
-    width="100%"
-    :maskClosable="false"
-    wrap-class-name="full-modal"
-    :title="title"
-    destroyOnClose
-  >
-    <ComingSoon></ComingSoon>
-  </el-dialog>
+        <!--                <q-btn-->
+        <!--                  size="sm"-->
+        <!--                  :color="!quickTransferTab ? 'white' : 'primary'"-->
+        <!--                  glossy-->
+        <!--                  :text-color="!quickTransferTab ? 'black' : 'white'"-->
+        <!--                  push-->
+        <!--                  label="Bank Transfer"-->
+        <!--                  icon="account_balance"-->
+        <!--                  @click="quickTransferTab = false"-->
+        <!--                />-->
+        <!--              </q-btn-group> &ndash;&gt;-->
+
+        <!--              &lt;!&ndash; <template v-if="quickTransferTab">-->
+        <!--                <div class="numbers">-->
+        <!--                  <div class="instruction">Transfer amount to platform</div>-->
+
+        <!--                  <q-btn-->
+        <!--                    class="full-width"-->
+        <!--                    push-->
+        <!--                    glossy-->
+        <!--                    color="brand"-->
+        <!--                    v-for="(val, valIndex) in values"-->
+        <!--                    :key="valIndex"-->
+        <!--                    @click="submitTransfer(val)"-->
+        <!--                  >-->
+        <!--                    {{ val }}-->
+        <!--                  </q-btn>-->
+        <!--                </div>-->
+        <!--              </template> &ndash;&gt;-->
+        <!--              <template v-if="!quickTransferTab">-->
+        <!--                <DepositComponent/>-->
+        <!--              </template>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </q-drawer>-->
+      </q-toolbar>
+    </q-dialog>
+    <q-dialog v-model="visibleComingSoon" class="gameDialog" style="width: 100%; margin: 0 auto">
+      <!--      <img src="../../assets/logo-coming.png" style="width: 80%;"/>-->
+    </q-dialog>
+  </q-scroll-area>
 </template>
 <script setup id="GameModal">
-import { userStore } from "@/store";
-import { launchSessionGame } from "@/api/platform/platform";
-import { isMobile } from "@/utils/utils";
-import { ref, defineExpose } from "vue";
-import ComingSoon from "@/components/loading/ComingSoon";
-import TFLoading from "@/components/loading/TFLoading";
-import { transfer } from "@/api/personal/transfer";
-import { storeToRefs } from "pinia";
-import DepositComponent from "@/components/depositComponent.vue";
-import { ElMessage, ElMessageBox } from "element-plus";
-import { useRouter } from "vue-router";
-import { useI18n } from "vue-i18n";
+import { userStore } from "stores/index";
+// import { launchSessionGame } from "api/platform/platform";
+// import { isMobile } from "utils/utils";
+import { useRoute, useRouter } from "vue-router";
+import { ref, defineExpose, reactive, shallowRef } from "vue";
+import { isAndroid, isHuaweiPhone } from "boot/utils";
 
+import { storeToRefs } from "pinia";
+import { api } from "boot/axios";
+import { useQuasar, Platform, AppFullscreen, openURL } from "quasar";
+import liff from "@line/liff";
+import { useI18n } from "vue-i18n";
+// import { ScreenOrientation } from '@ionic-native/screen-orientation';
+const $q = useQuasar();
 const { t } = useI18n();
 const store = userStore();
 const { token } = storeToRefs(store);
+
+const formRef = ref();
+const payTypeClass = ref();
+var payMethods = reactive([]);
+const paymentNode = ref([]);
+const activeMethod = ref({});
+const bankCardList = ref([]);
+const privilegeList = ref([]);
+const selectedPayType = shallowRef("");
+const isPaymentLoading = ref(true);
+
+const fabPos = ref([18, 18]);
+const draggingFab = ref(false);
+
+const moveFab = (ev) => {
+  draggingFab.value = ev.isFirst !== true && ev.isFinal !== true;
+
+  fabPos.value = [fabPos.value[0] - ev.delta.x, fabPos.value[1] - ev.delta.y];
+};
+
 const isMobileDrawerActive = ref(false);
 const values = ref(["100", "200", "300", "500", "1000"]);
+const hasPrivilege = ref(false);
+const quickTransferTab = ref(false);
 
-const quickTransferTab = ref(true);
+const checkAmount = reactive({
+  flag: true,
+  errorMessage: ""
+});
+
+function selectPayType(value) {
+  if (value) {
+    if (value.payType === "BANK") {
+      selectedPayType.value = Bank;
+      if (!value.extra) {
+        bankCardList.value = [];
+        form.bankId = null;
+      } else if (value.extra.banks) {
+        bankCardList.value = value.extra.banks;
+      }
+    } else if (value.payType === "TruePay") {
+      selectedPayType.value = TruePay;
+      if (!value.extra) {
+        bankCardList.value = [];
+        form.bankId = null;
+      } else if (value.extra.banks) {
+        bankCardList.value = value.extra.banks;
+      }
+    } else if (value.payType === "OFFLINE") {
+      selectedPayType.value = Offline;
+      form.bankId = null;
+    }
+  }
+}
 
 const drawerVisible = ref(false);
 
-const showDrawer = () => {
-  quickTransferTab.value = false;
-  drawerVisible.value = true;
-};
-const copyText = ref(t("deposit.copyWebsite"));
-let intervalId = null;
-const copyTo = () => {
-  // copyToClipboard(src.value);
-  // copyText.value = '已复制';
-  // setInterval({copyText.value = '已复制'}, 1000)
-  // copyText.value = '复制网址';
-
-  navigator.clipboard.writeText(src.value);
-  copyText.value = t("deposit.copied");
-
-  // Clear previous interval if any
-  if (intervalId) {
-    clearInterval(intervalId);
-  }
-
-  // Set a new interval to change the text back after 5 seconds
-  intervalId = setInterval(() => {
-    copyText.value = t("deposit.copyWebsite");
-    clearInterval(intervalId);
-    intervalId = null;
-  }, 2000); // 5000 milliseconds = 5 seconds
-};
-
-const onClose = () => {
-  drawerVisible.value = false;
-};
-const destroyGame = () => {
-  // Modal.destroyAll();
-  // // let iframe = document.getElementedById("game-iframe")
-  // // iframe.parentNode.removeChild(iframe)
-  // logoShow.value = true;
-  // src.value = "";
-};
-// const router = useRouter();
-// const route = useRoute();
+const router = useRouter();
+const route = useRoute();
 const visible = ref(false);
 const visibleComingSoon = ref(false);
 const src = ref("");
 const logoShow = ref(true);
 const title = ref("");
-const iframeScroll = ref(true);
-const router = useRouter();
 
 const transferInfo = ref({
   amount: null,
@@ -194,10 +231,16 @@ const transferInfo = ref({
 const isClicked = ref("");
 const submitTransfer = (amount) => {
   transferInfo.value.amount = amount;
-  transfer(0, transferInfo.value)
+  api
+    .post("/session/balance/transfer/deposit", transferInfo.value)
     .then((response) => {
       if (response.code === 0) {
-        // message.success("สำเร็จ");
+        $q.notify({
+          color: "positive",
+          position: "top",
+          message: "转账成功",
+          icon: "check_circle_outline"
+        });
         isClicked.value = amount;
         if (token) {
           store.getBalance();
@@ -208,94 +251,197 @@ const submitTransfer = (amount) => {
       }
     })
     .catch((error) => {
-      console.log(error.message);
-      // message.error(error.message, 4);
+      // $q.notify({
+      //   color: "negative",
+      //   position: "top",
+      //   message: error.message,
+      //   icon: "report_problem"
+      // });
     });
 };
+const closeDialog = () => {
+  visible.value = false;
+  src.value = "";
+  if (isAndroid() && !isHuaweiPhone()) {
+    AppFullscreen.exit();
+    window.screen.orientation.lock("portrait");
+  }
+};
 const open = (gameName, platformCode, gameCode, gameType) => {
-  transferInfo.value = {
-    platform: platformCode
-  };
+  transferInfo.value.platform = platformCode;
+
+  localStorage.removeItem("isOpenFromAccount");
+  localStorage.removeItem("isBacked");
+
+  // Get the iframe
+  const iFrame = document.getElementById("game-iframe");
+
+  // Let's say that you want to access a button with the ID `'myButton'`,
+  // you can access via the followi ng code:
+  // const buttonInIFrame = iFrame.contentWindow.document.getElementById('iphone-tips-close-button');
+  // buttonInIFrame.style.visible = visible;
+  //   console.log(iframe)
   title.value = gameName;
   const store = userStore();
   if (store.memberType !== "TEST" && gameType === "TEST") {
     visibleComingSoon.value = true;
   } else {
-    if (store.token) {
-      // console.log(gameCode);
-      // console.log(platformCode);
-      if (gameCode === "bbkeno_lobby_pc") {
-        iframeScroll.value = true;
+    if (store.hasToken()) {
+      if (isAndroid() && !isHuaweiPhone()) {
+        AppFullscreen.request();
+        window.screen.orientation.unlock();
+      }
+      // visible.value = true;
+      var way = null;
+      if ("standalone" in window.navigator && window.navigator.standalone) {
+        way = "IOS";
+      } else {
+        way = Platform.is.mobile ? "H5" : "WEB";
+        if (Platform.is.capacitor) {
+          if (Platform.is.android) {
+            way = "ANDROID";
+          }
+        }
       }
 
-      if (platformCode === "onlyPlatform") {
-        launchSessionGame(gameCode, {
-          isMobile: isMobile()
-        }).then((res) => {
-          src.value = res.data;
-          visible.value = true;
-        });
-      } else if (
-        platformCode === "SGWin" ||
-        platformCode === "TCG" ||
-        platformCode === "WON" ||
-        platformCode === "WS" ||
-        (platformCode === "BBINDY" && gameCode === "bbkeno_lobby_pc")
-      ) {
-        launchSessionGame(platformCode, {
-          gameCode: gameCode,
-          isMobile: isMobile()
-        }).then((res) => {
-          if (res.code === 0) {
-            var screenWidth = window.screen.width;
-            var screenHeight = window.screen.height;
+      $q.loading.show({ message: t("lang.loading") });
 
-            window.open(
-              res.data,
-              "popUpWindow",
-              `fullscreen=yes,resizable=no,scrollbars=yes,toolbar=no,menubar=no,location=no,directories=no,width=${screenWidth},height=${screenHeight}`
-            );
-          } else {
-            ElMessage.error(t("response." + res.code) || res.message);
-          }
-        });
-      } else {
-        launchSessionGame(platformCode, {
-          gameCode: gameCode,
-          isMobile: isMobile()
-        }).then((res) => {
-          if (res.code === 0) {
-            let srcData = res.data;
+      if (way !== "H5") {
+        //Change to open at same page.
+        if (platformCode === "platformType") {
+          api
+            .get(`/session/launch?_time=${new Date().getTime()}`, {
+              params: {
+                platform: gameCode,
+                isMobile: Platform.is.mobile ? true : false,
+                way: way
+              }
+            })
+            .then((response) => {
+              $q.loading.hide();
+
+              if (way == "ANDROID") {
+                var ref = cordova.InAppBrowser.open(response.data, "_blank", "location=no,zoom=no");
+              } else {
+                window.location.href = response.data;
+              }
+              // src.value = response.data;
+              // visible.value = true;
+            })
+            .catch((err) => {
+              $q.loading.hide();
+              // $q.notify({
+              //   color: "negative",
+              //   position: "top",
+              //   message: err.message,
+              //   icon: "report_problem"
+              // });
+            });
+          return;
+        }
+        api
+          .get(`/session/launch?_time=${new Date().getTime()}`, {
+            params: {
+              platform: platformCode,
+              gameCode: gameCode,
+              isMobile: Platform.is.mobile ? true : false,
+              way: way
+            }
+          })
+          .then((response) => {
+            $q.loading.hide();
+            let srcData = response.data;
 
             if (platformCode === "PG") {
-              const scriptEndTag = "</" + "script>";
-              srcData = res.data
-                .replace(/<\/script>/g, scriptEndTag)
-                .replaceAll(/\\\"/g, '"')
-                .replaceAll(/\n/g, "");
+              srcData = srcData.replaceAll(/\\\"/g, '"').replaceAll(/\n/g, "");
+              src.value = srcData;
+              visible.value = true;
+            } else if (way === "ANDROID") {
+              var ref = cordova.InAppBrowser.open(srcData, "_blank", "location=no,zoom=no");
+            } else {
+              window.location.href = srcData;
             }
 
-            src.value = srcData;
-            visible.value = true;
-          } else {
-            ElMessage.error(t("response." + res.code) || res.message);
-          }
-        });
+            // src.value = response.data;
+            // visible.value = true;
+          })
+          .catch((err) => {
+            $q.loading.hide();
+            // $q.notify({
+            //   color: "negative",
+            //   position: "top",
+            //   message: err.message,
+            //   icon: "report_problem"
+            // });
+          });
+      } else {
+        if (platformCode === "platformType") {
+          api
+            .get(`/session/launch?_time=${new Date().getTime()}`, {
+              params: {
+                platform: gameCode,
+                isMobile: Platform.is.mobile ? true : false,
+                way: way
+              }
+            })
+            .then((response) => {
+              $q.loading.hide();
+              // newWin.location.href = response.data;
+              window.location.href = response.data;
+            });
+          return;
+        }
+        // ,headers: platformCode === 'PG' ? { 'Cache-Control': 'no-cache, no-store, must-revalidate' } : {}
+        api
+          .get(`/session/launch?_time=${new Date().getTime()}`, {
+            params: {
+              platform: platformCode,
+              gameCode: gameCode,
+              isMobile: Platform.is.mobile ? true : false,
+              way: way
+            }
+          })
+          .then((response) => {
+            $q.loading.hide();
+
+            let srcData = response.data;
+
+            if (platformCode === "PT") {
+              if (Platform.is.ios && Platform.is.mobile && Platform.is.safari) {
+                visible.value = true;
+                src.value = srcData;
+              } else {
+                window.open(response.data, "_blank");
+              }
+            } else if (platformCode === "PG") {
+              srcData = srcData.replaceAll(/\\\"/g, '"').replaceAll(/\n/g, "");
+              src.value = srcData;
+              visible.value = true;
+            } else if (platformCode === "SABA") {
+              // newWin.location.href = response.data;
+              var currentUrl = window.location.hostname;
+              window.location.href = response.data + `&homeUrl=${currentUrl}`;
+            } else if (way == "ANDROID") {
+              var ref = cordova.InAppBrowser.open(srcData, "_blank", "location=no,zoom=no");
+            } else {
+              window.location.href = srcData;
+            }
+
+            // newWin.location.href = response.data;
+            // window.location.href = response.data;
+          })
+          .catch((err) => {
+            $q.loading.hide();
+            // $q.notify({
+            //   color: "negative",
+            //   position: "top",
+            //   message: err.message,
+            //   icon: "report_problem"
+            // });
+          });
       }
     } else {
-      // router.push("/login");
-      ElMessageBox.alert(t("bankError.loginbeforeAction"), t("common.loginTitle"), {
-        // if you want to disable its autofocus
-        // autofocus: false,
-        center: true,
-        confirmButtonText: t("common.confirm"),
-        showClose: false,
-        buttonSize: "large"
-      }).then(() => {
-        store.loginPageVisible = true;
-        // router.push("/login");
-        // emits("open-login-dialog");
-      });
+      router.push({ path: "/login", query: { redirect: route.path } });
     }
   }
 };
@@ -306,41 +452,28 @@ const loadGame = () => {
   }
 };
 
+const close = () => {
+  visible.value = false;
+  src.value = "";
+  logoShow.value = true;
+  payMethods = [];
+};
+
 defineExpose({
   open
 });
 </script>
 <style lang="scss">
-.el-overlay {
-  z-index: 2500 !important;
-}
-.sm .ant-modal {
-  width: 100%;
-  max-width: 400px;
-  top: 0;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-
-  .ant-modal-content {
-    width: 90%;
-  }
-
-  .confirm-btn {
-    padding: 5px;
-    min-width: unset;
-    font-weight: normal;
-  }
+.gameDialog {
+  background: #23263cbc;
 }
 
-.node-modal .node .node .account-title-container {
-  margin: 0;
+.close-btn {
+  height: 56px;
 }
 
-.el-popper.is-pure.is-light.el-select__popper {
-  z-index: 5000 !important;
+#iphone-tips-close-button {
+  visibility: visible !important;
 }
 </style>
 
@@ -349,7 +482,6 @@ defineExpose({
   display: flex;
   flex-direction: column;
   row-gap: 10px;
-  background: #201f2a;
   overflow: auto;
   align-items: stretch;
   justify-content: flex-start;
@@ -540,33 +672,30 @@ defineExpose({
 
 .additional-buttons {
   position: absolute;
-  top: 8px;
-  right: 50px;
-  gap: 10px;
-  // right: -60px;
-  // width: 60px;
-  // display: flex;
-  // height: 100%;
-  // flex-direction: column;
-  // justify-content: space-between;
-  // top: 0;
-  // background: #d48eff;
+  right: -60px;
+  width: 60px;
   display: flex;
-  .bottom-button,
-  .copy-button {
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #2b2b4b;
+
+  .bottom-button {
     display: block;
+    transform-origin: left top;
+    padding: 10px;
     font-size: 13px;
     text-align: center;
+    border-radius: 0 10px 10px 0;
+    transform: rotate3d(0, 0, 1, 90deg);
     cursor: pointer;
-    box-shadow: 0 0 10px 0 #464646;
-    color: #fff;
-    padding: 5px;
-    // margin-top: 45px;
-    // margin-left: 10px;
+    box-shadow: 0px 0px 10px 0 #000;
+    padding: 10px 5px;
+    width: 120px;
+    transform-origin: top left;
+    margin-top: -140px;
+    margin-left: 50px;
     border-radius: 10px;
-    word-break: break-all;
-    white-space: normal;
-    // width: 55px;
   }
 }
 
@@ -584,7 +713,7 @@ defineExpose({
 }
 
 :deep(.ant-drawer-header) {
-  background: #201f2a;
+  background: #2b2b4b;
 }
 
 :deep(.ant-drawer-title) {
@@ -597,7 +726,7 @@ defineExpose({
 
 :deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector) {
   position: relative;
-  background-color: #23263c;
+  background-color: #212534;
   border: 0;
   color: #ffffff;
 }
@@ -615,32 +744,38 @@ defineExpose({
   margin-right: -60px;
 }
 
-.game-iframe {
+.q-toolbar {
   height: 100%;
-  width: 100%;
-  margin: 0 auto;
-  display: block;
-}
+  max-height: unset !important;
+  max-width: unset !important;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  padding: 0;
 
-.desktopview {
-  // display: flex;
-  .title {
-    font-weight: bold;
-    font-size: 20px;
+  .topActions {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
   }
 }
 
-.fullheight {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.game-iframe {
+  width: 100%;
+  height: 100%;
 }
+
+// .game-iframe {
+//     width: 100%;
+//     height: 100%;
+//     width: 100%;
+//     // position: absolute;
+//     // top: 40px;
+//     left: 0;
+//     right: 0;
+//     margin: auto;
+//     z-index: 999;
+// }
 
 .mobileshow {
   display: none;
@@ -652,9 +787,9 @@ defineExpose({
     max-width: 100%;
     width: 100%;
   }
-  .desktopview {
-    display: none;
-  }
+  // .desktopview {
+  //   display: none;
+  // }
   .mobileshow {
     display: block;
 
@@ -694,8 +829,7 @@ defineExpose({
     .common-btn {
       flex: 1;
       border: 0;
-      background: #201f2a;
-      color: #ffffff;
+      background: #2b2b4b;
       border-radius: 0;
       font-size: 12px;
       text-align: center;
@@ -718,8 +852,8 @@ defineExpose({
     position: absolute;
     border-radius: 10px;
     text-align: center;
-    background: #ffffff;
-    color: #000000;
+    background-color: linear-gradient(to right, #de4545, #db7e42);
+    background-image: linear-gradient(to right, #de4545, #db7e42);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -751,19 +885,37 @@ defineExpose({
     display: flex;
     right: 0px;
   }
-
-  .game-iframe {
-    height: calc(100% - 40px);
-    top: 40px;
-    position: fixed;
-  }
 }
 
-@media (orientation: landscape) {
-  .game-iframe {
-    top: 0;
-    height: 100%;
-    // padding: env(safe-area-inset-top, 40px) env(safe-area-inset-right, 40px)  env(safe-area-inset-bottom, 40px)  env(safe-area-inset-left, 40px) ;
-  }
+.game-iframe {
+  position: fixed;
+  width: 100vw;
+  z-index: 1;
+  top: 0px;
 }
+
+.q-toolbar .topActions {
+  position: fixed;
+  width: 100vw;
+  right: 0px;
+  left: 0px;
+  z-index: 999;
+}
+
+// @media (orientation: portrait) {
+//   .game-iframe {
+//     top: 0;
+//       height: calc(100vh - 45px - env(safe-area-inset-top, 40px) - env(safe-area-inset-bottom, 59px) );
+//       // padding-bottom: env(safe-area-inset-bottom, 40px);
+//       padding-bottom: 45px;
+
+//   }
+// }
+// @media (orientation: landscape) {
+//   .game-iframe {
+//     top: 0;
+//       height: calc(100vh - env(safe-area-inset-left, 0) - env(safe-area-inset-right, 0) );
+//       // padding: env(safe-area-inset-top, 40px) env(safe-area-inset-right, 40px)  env(safe-area-inset-bottom, 40px)  env(safe-area-inset-left, 40px) ;
+//   }
+// }
 </style>

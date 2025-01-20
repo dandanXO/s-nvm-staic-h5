@@ -2,24 +2,25 @@
   <div class="christmas-new-year-container">
     <div class="el-loading-mask el-loading-mask-h" v-if="isLoading">
       <p class="spinner"><img src="@/components/hotpromo/christmas-new-year/img/spinner.png" /></p>
-      <p class="loading-text">{{ $t('common.loading') }}...</p>
+      <p class="loading-text">{{ $t('lang.loading') }}...</p>
     </div>
     <!-- <div class="record-btn" @click="openModal('record')">
-      {{ $t('promo.view_records') }}
+      {{ $t('lang.promo_view_records') }}
     </div> -->
     <div class="title">
-      {{ $t('promo.available_draw') }}: {{ availableDraw }}
+      {{ $t('lang.promo_available_draw') }}: {{ availableDraw }}
     </div>
     <div class="prizes">
-      <div @click="getGachapon" class="prize" v-for="prize in 6">
+      <div @click="getGachapon" class="prize" v-for="prize in 6" :key="prize">
         <img src="@/components/hotpromo/christmas-new-year/img/claimbtn.png">
       </div>
     </div>
     <div class="terms">
-      <!-- <div class="termtitle">{{ $t('promo.tnc') }}</div> -->
+      <!-- <div class="termtitle">{{ $t('lang.promo_tnc') }}</div> -->
       <div class="termcontent" v-html="promoRules"></div>
     </div>
-    <el-dialog :close-on-click-modal="false" :close-on-press-escape="false" class="christmas-modal" v-model="isModal">
+    
+  <q-dialog class="christmas-modal" v-model="isModal" align-center>
     <div class="inner-contents">
       <div class="modaltitle">
         <!-- <img src="../christmas-gachapon/img/side.png" /> -->
@@ -27,27 +28,20 @@
         <!-- <img src="../christmas-gachapon/img/side.png" /> -->
       </div>
       <div v-if="modalContent.type === 'rule'" class="rules" v-html="rules"></div>
+      
       <div class="table-scroll" v-if="modalContent.type === 'record'">
-        <el-table :data="paginatedData" style="width: 100%;">
-          <el-table-column prop="prizeNo" label="Mã số"></el-table-column>
-          <el-table-column prop="bonusAmount" label="So Tien Thuong"></el-table-column>
-          <el-table-column prop="loginName" label="Ten Dang Nhap"></el-table-column>
-          <el-table-column prop="recordTime" label="Thời gian"></el-table-column>
-          <!-- <el-table-column prop="status" label="状态" width="100"></el-table-column> -->
-        </el-table>
+        <q-table
+          flat
+          bordered
+          dense
+          grid
+          row-key="prizeNo"
+          :rows="translatedTableData"
+          :columns="columns"
+          v-model:pagination="pagination"
+          style="max-height: 200px"
+        />
       </div>
-      <el-pagination
-        v-if="modalContent.type === 'record'"
-        style="margin-top: 20px; justify-content: center; text-align: right"
-        background
-        v-model:current-page="params.current"
-        v-model:page-size="params.size"
-        :total="totalItems"
-        layout="prev, pager, next, sizes, jumper"
-        :page-sizes="[5, 10, 20, 30, 50]"
-        @current-change="onPageSizeChange"
-        @update:page-size="onPageSizeChange"
-      />
     </div>
     <!-- <div class="details" v-if="modalContent.type === 'detail'">
       <div class="detailed-info">
@@ -132,18 +126,14 @@
         </div>
       </div>
     </div> -->
-  </el-dialog>
-  <el-dialog
-    :show-close="false"
-    :close-on-click-modal="true"
-    :close-on-press-escape="true"
+  </q-dialog>
+  <q-dialog
     class="prize-modal"
     :class="{ five: prizes.length > 1, once: prizes.length <= 1 }"
     v-model="isPrizeModal"
-    align-center
   >
     <div class="items">
-      <div class="item" v-for="item in prizes">
+      <div class="item" v-for="item in prizes" :key="item">
         <!-- <div class="imgball"><img :src="require(`@/components/hotpromo/christmas-new-year/img/${prize.img}.png`)" /></div> -->
         <div class="redbar">{{ item.type }}</div>
       </div>
@@ -151,7 +141,7 @@
     <div class="claimbtn" @click="getBalance()">
       <img src="@/components/hotpromo/christmas-new-year/img/claim.png" />
     </div>
-  </el-dialog>
+  </q-dialog>
   </div>
 </template>
 
@@ -159,13 +149,10 @@
 import { onMounted, ref, defineProps, computed, reactive } from "vue";
 import { useRouter } from 'vue-router';
 import { initDrawEvent, getDrawPrizes, getDrawRecord } from "../../../api/index/promo";
-import { ElMessage } from "element-plus";
-import { userStore } from "@/store";
+import { useQuasar } from "quasar";
+import { userStore } from "src/stores";
+import i18n from "src/i18n/index";
 import moment from "moment";
-import { useI18n } from "vue-i18n";
-
-import i18n from "@/i18n/index";
-const { t } = useI18n();
 const props = defineProps(["promoCode", "promoRules"]);
 const promoCode = ref(props.promoCode);
 const promoRules = ref(props.promoRules);
@@ -173,6 +160,7 @@ const router = useRouter();
 const availableDraw = ref(0);
 const store = userStore();
 const isModal = ref(false);
+const $q = useQuasar();
 
 const init = () => {
   initDrawEvent(promoCode.value).then((res) => {
@@ -188,47 +176,39 @@ const getBalance = () => {
 };
 const isLoading = ref(false);
 const prizes = ref([]);
+const isPrizeModal = ref(false);
 const modalContent = {};
 const tableData = ref([])
 const params = reactive({
   size: 30,
   current: 1
 });
-const onPageSizeChange = async () => {
-  tableData.value = [];
-  getDrawRecord(promoCode.value, params).then((res) => {
-    if (res.code === 0) {
-      totalItems.value = res.data.total;
-      tableData.value = res.data.records;
-    } else {
-      ElMessage.error(res.message)
-    }
-  });
-};
-// Translate the table data
-const translateTableData = (data) => {
-  return data.map((row) => ({
-    'prizeNo': row.prizeNo,          // Mã số
-    'bonusAmount': row.bonusAmount, // Số tiền thưởng
-    'loginName': row.loginName,   // Tên đăng nhập
-    // bonusName: row.bonusAmount ? `Chúc mừng bạn đã nhận được ${row.bonusName} ${row.bonusAmount} tiền thưởng` : `Chúc mừng bạn đã nhận được ${row.bonusName}`,
-    // status: statusTranslations[row.status] || row.status, // Use translation or fallback to original
-    'recordTime': moment(row.recordTime).format("YYYY-MM-DD HH:mm:ss") // Format time
-  }));
-};
+
+const pagination = ref({
+  sortBy: "desc",
+  descending: false,
+  page: params.current,
+  rowsPerPage: params.size
+});
 
 const statusTranslations = {
   PENDING: "Đang xử lý",
   CLAIMED: "Đã nhận"
 };
-const paginatedData = computed(() => {
-  // Translate the data before pagination
-  const translatedData = translateTableData(tableData.value);
 
-  return translatedData; // Pagination on translated data
-});
+const translatedTableData = computed(() =>
+  tableData.value.map((row) => ({
+    // ...row,
+    'Ma So': row.prizeNo,          // Mã số
+    'So Tien Thuong': row.bonusAmount, // Số tiền thưởng
+    'Ten Dang Nhap': row.loginName,   // Tên đăng nhập
+    // bonusName: row.bonusAmount ? `Chúc mừng bạn đã nhận được ${row.bonusName} ${row.bonusAmount} tiền thưởng` : `Chúc mừng bạn đã nhận được ${row.bonusName}`,
+    // status: statusTranslations[row.status] || row.status, // Use translation or fallback to original
+    'Thời gian ghi nhận': moment(row.recordTime).format("YYYY-MM-DD HH:mm:ss") // Format time
+  }))
+);
+
 const totalItems = ref(0);
-const isPrizeModal = ref(false);
 const openModal = (type) => {
   modalContent.type = type;
   if (type === "detail") {
@@ -273,15 +253,15 @@ const getGachapon = (t) => {
       } else {
         prizes.value = [];
         var viMessage = '';
-        if (res.code === 58100) {
+        if (res.code === 58100) { // 抽奖次数不足
           viMessage = 'Bạn chưa có hoặc đã sử dụng hết số lần mở quà'
-        } else if (res.code === 58101) {
+        } else if (res.code === 58101) { // 今日可抽奖次已达上限
           viMessage = 'Bạn chưa có hoặc đã sử dụng hết số lần mở quà'
         } else if (res.code === 58102) {
           viMessage = 'Phần thưởng hôm nay đã phát hết rồi, ngày mai quay lại nhé'
         } else if (res.code === 58103) {
-          viMessage = 'Bạn không đủ điều kiện để nhận thưởng'
-        }  else if (res.code === 35013) {
+          viMessage = 'Phần thưởng hôm nay đã phát hết rồi, ngày mai quay lại nhé'
+        } else if (res.code === 35013) {
           viMessage = 'Bạn không đủ điều kiện để nhận thưởng'
         } else if (res.code === 604) {
           viMessage = 'Vui lòng đăng nhập tài khoản để mở quà'
@@ -292,9 +272,7 @@ const getGachapon = (t) => {
           type: viMessage
         }
         prizes.value.push(obj)
-        if (viMessage) {
-          isPrizeModal.value = true;
-        }
+        isPrizeModal.value = true;
       }
     })
     .catch((error) => {
@@ -331,11 +309,10 @@ onMounted(() => {
     gap: 15px;
     justify-content: flex-start;
     box-shadow: 0px 0px 4px 0px #01497B0F;
-    min-height: 1200px;
     border-radius: 12px;
     width: 100%;
     max-width: 1050px;
-    padding: 50px 20px;
+    padding: 20px 5px;
     margin: 0 auto;
     flex-direction: column;
     border: 1px solid #ACD4F6;
@@ -389,13 +366,13 @@ onMounted(() => {
       top: 20px;
     }
     .title {
-      width: 800px;
+      width: 330px;
       min-height: 150px;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding-top: 70px;
-      font-size: 20px;
+      padding-top: 60px;
+      font-size: 17px;
       color: #ffffff;
       font-weight: bold;
       margin: 0 auto;
@@ -408,19 +385,19 @@ onMounted(() => {
       justify-content: space-evenly;
       flex-wrap: wrap;
       .prize {
-        width: 300px;
-        height: 300px;
+        width: 30%;
+        height: 30vw;
         background:url(img/present.png)no-repeat center center;
         background-size: contain;
         position: relative;
         cursor: pointer;
         img {
           position: absolute;
-          bottom: 0px;
+          bottom: 7px;
           left: 0;
           right: 0;
           margin: auto;
-          width: 60%;
+          width: 70% !important;
         }
       }
     }
@@ -431,13 +408,20 @@ onMounted(() => {
       background: #FFFFFF;
       width: 95%;
       margin: 10px auto;
-      padding: 20px;
+      padding: 10px;
       .termtitle {
         color: #CB162A;
         font-weight: 600;
-        font-size: 28px;
+        font-size: 20px;
+      }
+      .termcontent {
+        font-size: 16px;
       }
     }
+  }
+</style>
+<style lang="scss">
+.christmas-modal {
   .modaltitle {
       min-height: 150px;
       display: flex;
@@ -447,94 +431,258 @@ onMounted(() => {
       font-size: 20px;
       color: #ffffff;
       font-weight: bold;
-      margin: 0 auto 10px;
+      margin: 0 auto 20px;
       background: url(img/title.png)no-repeat center center;
       background-size: contain;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background-color: white;
   }
-  }
-</style>
-<style lang="scss">
-.christmas-new-year-container .terms {
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: Arial, sans-serif;
-    margin: 20px auto;
+  .title {
     text-align: center;
-  }
-
-  th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-  }
-
-  th {
-    background-color: #b22222;
-    color: #fff;
-  }
-
-  tr:nth-child(even) {
-    background-color: #f9f9f9; 
-  }
-
-  tr:hover {
-    background-color: #f1f1f1; 
-    transition: background-color 0.3s ease;
-  }
-}
-body .el-dialog.christmas-modal .el-dialog__header .el-dialog__headerbtn .el-dialog__close, 
-body .el-dialog.prize-modal.once .el-dialog__header .el-dialog__headerbtn .el-dialog__close {
-  color: #ff0000;
-}
-
-body .el-dialog.christmas-modal {
-  .el-table th.el-table__cell.is-leaf,
-  .el-table--enable-row-transition .el-table__body td.el-table__cell {
-    text-align: center;
-  }
-}
-body .el-dialog.prize-modal.once {
-  background: none;
-  box-shadow: none;
-}
-body .el-dialog.prize-modal.once .el-dialog__body {
-  transform: scale(1.25);
-  background: url(img/modalbg.png) no-repeat center center;
-  background-size: contain;
-    min-height: 350px;
-    padding: 0 10px;
-
-  .items {
-    .item {
-      .imgball {
-        width: 300px;
-      }
+    margin: 10px auto;
+    color: #1f774c;
+    font-family: PingFang;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 44px;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    img {
+      width: 40px;
     }
   }
-  .redbar {
-    font-size: 18px;
-    width: 70%;
-    max-width: 280px;
-    color: #FBE696;
-    text-align: center;
-    margin: 0px auto;
-    padding: 60px 35px 0;
-    min-height: 165px;
+  .christmas-side {
+    position: absolute;
+    right: 20px;
+    bottom: 0px;
+  }
+
+}
+.prize-modal {
+  .prizes {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 1%;
+    .prize {
+      width: 30%;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: flex-start;
+      .imgball {
+        width: 80px;
+        img {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+.christmas-modal .q-dialog__inner {
+  background: #ffffff;
+  background-size: 100% 100%;
+  height: 90vh;
+  justify-content: center;
+  align-items: flex-start;
+  width: 95%;
+  margin: auto;
+  > div {
+    height: 100%;
+  }
+}
+.prize-modal .q-dialog__inner {
+  background: url(../christmas-new-year/img/modalbg.png) no-repeat center center;
+  background-size: 100% 100%;
+  padding: 120px 0 80px;
+  max-height: 95vh;
+  width: 95%;
+  margin: 0 auto;
+  align-self: center;
+  display: flex;
+  overflow: hidden;
+  max-width: 350px;
+  * {
+    scrollbar-width: thin; /* Simplified width */
+    scrollbar-color: #e6374a transparent; /* Thumb color, no track background */
+  }
+  > div {
+    // width: 80%;
+    margin: 0 auto;
+    overflow: auto;
+    max-width: 340px;
+    width: 95%;
+  }
+  .rules {
+    height: 45vh;
+    width: 95%;
+    margin: auto;
+    font-size: 14px;
+    color: #333; // Default text color
+    line-height: 1.6;
+    padding: 10px 0;
+    border-radius: 8px; // Optional: Rounded corners for the rules container
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      counter-reset: item; // Initialize counter
+
+      li {
+        position: relative;
+        padding-left: 30px; // Space for numbered circle
+        margin-bottom: 15px;
+
+        &::before {
+          content: counter(item); // Display the index
+          counter-increment: item; // Increment counter
+          position: absolute;
+          top: 10px;
+          left: 0px;
+          transform: translateY(-50%);
+          background: linear-gradient(135deg, #e6374a, #ac1828);
+          color: #ffffff;
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 14px;
+          font-weight: bold;
+        }
+      }
+    }
+
+    font {
+      color: #c24f4a;
+      font-weight: bold; // Optional: Emphasize important notes
+    }
+  }
+  .q-table thead {
+    position: sticky;
+    top: 0;
+    background-color: #fff; /* Ensure the header background is white */
+    z-index: 1; /* Ensure it stays above the table body */
+  }
+  .q-table__grid-item-row {
+    display: flex;
+    gap: 15px;
+    .q-table__grid-item-title {
+      color: #e6374a;
+      opacity: 1;
+    }
+  }
+  /* Table header color */
+  .custom-table .q-table__head {
+    background: #f34e38;
+    color: white;
+  }
+
+  /* Even rows color */
+  .custom-table .q-table__row:nth-child(even) {
+    background: #f34e3855; /* Light transparent red for even rows */
+  }
+
+  /* Optional: Style odd rows differently if needed */
+  .custom-table .q-table__row:nth-child(odd) {
+    background: white; /* or any other background color */
+  }
+  .table-scroll {
+    height: 40vh;
+    overflow: auto;
+    position: relative;
+  }
+  .q-table__bottom--nodata {
+    color: #ff0000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30vh;
+  }
+}
+.prize-modal.once {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+.prize-modal.once .q-dialog__inner {
+  background: url(../christmas-new-year/img/modalbg.png) no-repeat center center;
+  background-size: contain;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 190px;
+  
+  // height: 380px;
+  height: 530px;
+    width: 95%;
+    max-width: 220px;
+    transform: scale(1.1);
+
+  .items {
+    height: 210px;
   }
   .claimbtn {
-    width: 150px;
-    position: absolute;
-    bottom: 15px;
-    margin: auto;
-    left: 0;
-    right: 0;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px auto 0;
     cursor: pointer;
+    width: 140px;
+    position: absolute;
+    bottom: 120px;
     img {
       width: 100%;
     }
   }
+  .prizes {
+    .prize {
+      width: unset;
+      .imgball {
+        width: 200px;
+      }
+    }
+  }
+  .redbar {
+    font-size: 15px;
+    width: 90%;
+    max-width: 160px;
+    color: #FBE696;
+    text-align: center;
+    margin: 0 auto;
+  }
+  > div {
+    overflow: unset;
+  }
+}
+.promo-container .selected-promo .selected-promo-wrapper .inner .christmas-new-year-container .terms {
+  
+  table {
+      th, td {
+        border: 1px solid #ddd;
+        padding: 10px;
+      }
+        th {
+          background-color: #b22222;
+          color: #ffffff;
+          font-size: 13px;
+        }
+        tr:nth-child(even) {
+          background-color: #f9f9f9; 
+        }
+
+        tr:hover {
+          background-color: #f1f1f1; 
+          transition: background-color 0.3s ease;
+        }
+      }
 }
 </style>

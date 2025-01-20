@@ -1,60 +1,92 @@
 <template>
-  <div class="announcement-component">
-    <el-carousel class="banner-slider" :autoplay="false" :interval="5000">
-      <el-carousel-item class="banner-container" v-for="item in mailData" :key="item.id">
+  <q-carousel
+    v-model="innerSlide"
+    swipeable
+    animated
+    :navigation="false"
+    padding
+    :arrows="false"
+    @update:model-value="emits('chageSlide', $event)"
+  >
+    <q-carousel-slide v-for="(item, index) in mailData" :key="item.id" :name="index" class="column no-wrap flex-center">
+      <div class="announcement-component">
         <div class="announcement-title" v-html="item.title"></div>
-        <template v-if="item.content">
-          <div class="announcement-content" v-html="item.content"></div>
-        </template>
-
-      </el-carousel-item>
-    </el-carousel>
-    <div class="announcement-footer">
-      <div class="footer-button-1" @click="store.openLiveChat()">
-        {{ $t('inbox.contactCS') }}
-        <!-- <img src="@/assets/images/home/sticky-sidebar/cs-icon.svg" /> -->
+        <div class="announcement-content" v-html="item.content"></div>
+        <div class="announcement-footer">
+          <div class="footer-button" @click="handleService">
+            {{$t('lang.inbox_contactCS')}}
+            <img src="../../assets/images/home/announcement/arrow-right.svg" alt="" />
+          </div>
+          <div class="footer-button" @click="handleDetail(item)">
+            {{$t('lang.inbox_viewDetails')}}
+            <img src="../../assets/images/home/announcement/arrow-right.svg" alt="" />
+          </div>
+        </div>
       </div>
-      
-      <div class="footer-button-2" @click="goToMailDetail(item)">
-        {{ $t('inbox.viewDetails') }}
-        <!-- <el-icon :size="20">
-          <img src="../../assets/home/arrow-drop-right-line.svg" />
-        </el-icon> -->
-      </div>
-    </div>
-  </div>
+    </q-carousel-slide>
+  </q-carousel>
 </template>
 
 <script setup>
-import { userStore } from "@/store";
+import { ref, defineEmits, watch } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 
 const props = defineProps({
+  slide: {
+    type: Number,
+    default: 1
+  },
   mailData: {
     type: Array,
     default: () => []
   }
 });
-const store = userStore();
+const emits = defineEmits(["chageSlide"]);
+const innerSlide = ref(0);
+watch(
+  () => props.slide,
+  (newV, oldV) => {
+    innerSlide.value = newV;
 
-const goToMailDetail = (mail) => {
-  console.log(mail);
-  router.push(`/center/mailbox?mailid=${mail.id}&type=${mail.type}`);
+    if (newV != oldV) {
+    }
+  },
+  { immediate: true }
+);
+watch(
+  () => innerSlide,
+  (newV) => {
+    console.log("inin");
+    emits("chageSlide", newV);
+  }
+);
+
+const handleService = () => {
+  router.push("/liveChat");
+};
+
+const handleDetail = (mail) => {
+  router.push({
+    path: "/account/inbox",
+    query: {
+      id: mail.id,
+      type: mail.type
+    }
+  });
 };
 </script>
 
 <style lang="scss" scoped>
-.banner-container {
-  min-height: 400px;
+.announcement-component {
+  padding: 10px 12px 66px;
+  background: white;
   height: 100%;
+  position: relative;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  padding-bottom: 12px;
-}
-.announcement-component {
-  padding: 10px 12px 16px;
 }
 
 .announcement-title {
@@ -70,73 +102,32 @@ const goToMailDetail = (mail) => {
   margin-bottom: 12px;
   flex: 1;
   overflow: auto;
-  margin-bottom: 7px;
 }
 
 .announcement-footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 12px;
   align-items: center;
-  
-
-  .footer-button-1{
-    box-shadow: 0px 1.59px 1.59px 0px rgba(147, 199, 255, 1) inset;
-    background: linear-gradient(180deg, #73B2FF 0%, #3981FF 100%);
-    color: #fff;
-    height: 38px;
-    width: 170px;
-    border-radius: 6px;
-    padding: 2px;
-    font-size: 11px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .footer-button-2{
-    box-shadow: 0px 1.59px 1.59px 0px rgba(147, 199, 255, 1) inset;
-    background: linear-gradient(180deg, #73B2FF 0%, #3981FF 100%);
-    color: #fff;
-    height: 38px;
-    width: 170px;
-    border-radius: 6px;
-    padding: 2px;
-    font-size: 11px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-  }
+  position: absolute;
+  right: 20px;
+  bottom: 2px;
 
   .footer-button {
     cursor: pointer;
-    color: #2f3244;
+    background: #2792fd;
     display: inline-flex;
     justify-content: center;
     align-items: center;
     border-radius: 6px;
-    height: 48px;
+    height: 30px;
     font-size: 16px;
-    border: 1px solid #2f3244;
-    flex: 1;
     gap: 2px;
-
-    &.detail {
-      background: #2792fd;
-      color: white;
-      border: none;
-    }
-
+    padding: 8px 12px;
+    color: white;
     &:hover {
       filter: brightness(0.9);
     }
-    &:active {
-      transform: translate(0px, 1px);
-      opacity: 0.9;
-    }
   }
-}
-.banner-slider{
-  height: 400px;
 }
 </style>

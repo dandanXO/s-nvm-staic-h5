@@ -2,39 +2,39 @@
   <div class="about-info">
     <div class="inner">
       <ul>
-        <li>{{ $t("about.familyRestriction") }}</li>
-        <li>{{ $t("about.entertainmentPurpose2") }}</li>
-        <li>{{ $t("about.modifyPromotion") }}</li>
-        <li>{{ $t("about.singleDeposit") }}</li>
+        <li>{{ $t("lang.about.familyRestriction") }}</li>
+        <li>{{ $t("lang.about.entertainmentPurpose2") }}</li>
+        <li>{{ $t("lang.about.modifyPromotion") }}</li>
+        <li>{{ $t("lang.about.singleDeposit") }}</li>
         <li>
-          {{ $t("about.refundBasedOnBetTurnover") }}
+          {{ $t("lang.about.refundBasedOnBetTurnover") }}
           <ul class="sub-ul">
-            <li>{{ $t("about.refundOptions.loseAll") }}</li>
-            <li>{{ $t("about.refundOptions.loseLessThanStake") }}</li>
-            <li>{{ $t("about.refundOptions.winGreaterThanOrEqualTo75") }}</li>
-            <li>{{ $t("about.refundOptions.winLessThan75") }}</li>
+            <li>{{ $t("lang.about.refundOptions.loseAll") }}</li>
+            <li>{{ $t("lang.about.refundOptions.loseLessThanStake") }}</li>
+            <li>{{ $t("lang.about.refundOptions.winGreaterThanOrEqualTo75") }}</li>
+            <li>{{ $t("lang.about.refundOptions.winLessThan75") }}</li>
           </ul>
         </li>
-        <li>{{ $t("about.requiredRounds") }}</li>
+        <li>{{ $t("lang.about.requiredRounds") }}</li>
         <li>
-          {{ $t("about.abuseDiscretion") }}
+          {{ $t("lang.about.abuseDiscretion") }}
           <ul class="sub-ul">
-            <li>{{ $t("about.abuseExamples.excludedGames") }}</li>
-            <li>{{ $t("about.abuseExamples.multipleAccounts") }}</li>
-            <li>{{ $t("about.abuseExamples.crossAccountBets") }}</li>
-            <li>{{ $t("about.abuseExamples.oddsDifference") }}</li>
-            <li>{{ $t("about.abuseExamples.doubleBetAmount") }}</li>
-            <li>{{ $t("about.abuseExamples.betOnBothSides") }}</li>
-            <li>{{ $t("about.abuseExamples.doubleBet") }}</li>
-            <li>{{ $t("about.abuseExamples.allin") }}</li>
-            <li>{{ $t("about.abuseExamples.affiliateAbuse") }}</li>
+            <li>{{ $t("lang.about.abuseExamples.excludedGames") }}</li>
+            <li>{{ $t("lang.about.abuseExamples.multipleAccounts") }}</li>
+            <li>{{ $t("lang.about.abuseExamples.crossAccountBets") }}</li>
+            <li>{{ $t("lang.about.abuseExamples.oddsDifference") }}</li>
+            <li>{{ $t("lang.about.abuseExamples.doubleBetAmount") }}</li>
+            <li>{{ $t("lang.about.abuseExamples.betOnBothSides") }}</li>
+            <li>{{ $t("lang.about.abuseExamples.doubleBet") }}</li>
+            <li>{{ $t("lang.about.abuseExamples.allin") }}</li>
+            <li>{{ $t("lang.about.abuseExamples.affiliateAbuse") }}</li>
           </ul>
         </li>
-        <li>{{ $t("about.excludedBets") }}</li>
-        <li>{{ $t("about.transactionRecordsCheck") }}</li>
-        <li>{{ $t("about.falsifiedContentDisqualification") }}</li>
-        <li>{{ $t("about.amendTermsAndConditions") }}</li>
-        <li>{{ $t("about.withdrawalVerification") }}</li>
+        <li>{{ $t("lang.about.excludedBets") }}</li>
+        <li>{{ $t("lang.about.transactionRecordsCheck") }}</li>
+        <li>{{ $t("lang.about.falsifiedContentDisqualification") }}</li>
+        <li>{{ $t("lang.about.amendTermsAndConditions") }}</li>
+        <li>{{ $t("lang.about.withdrawalVerification") }}</li>
       </ul>
     </div>
   </div>

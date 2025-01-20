@@ -1,66 +1,64 @@
 <template>
-  <div class="promotion-section">
-    <HomeTitle :title="$t('home.slotEdition.promotion')" />
-    <div class="promotion-list">
-      <swiper
-        :slides-per-view="promotions.length > 2 ? 3 : promotions.length"
-        effect="fade"
-        :allow-slide-next="true"
-        :space-between="20"
-      >
-        <swiper-slide v-for="(promotion, index) in promotions" :key="index">
-          <a class="promotion" :title="promotion.title" @click="goToUrl(promotion.redirectUrl)">
-            <img :src="imgURL + promotion.mobileImgUrl" />
-            <span>{{ promotion.title }}</span>
-          </a>
-        </swiper-slide>
-      </swiper>
+  <div class="promotion-wrapper">
+    <div class="promotion-title">
+      <img src="../../../assets/images/home/slotEdition/hot-promotion-icon.png" />
+      {{ $t("lang.slotEdition.promotion") }}
     </div>
+    <swiper :space-between="12" :slides-per-view="1.5" class="promotion-list">
+      <swiper-slide v-for="(promotion, index) in promotions" :key="index">
+        <a class="promotion-item" @click="gotoPromo(promotion)">
+          <img :src="imgURL + promotion.mobileImgUrl" />
+          <span>{{ promotion.title }}</span>
+        </a>
+      </swiper-slide>
+    </swiper>
   </div>
 </template>
 <script setup>
-import HomeTitle from "@/atoms/HomeTitle.vue";
-import { onMounted, ref } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/css";
-import "swiper/css/pagination";
-import { loadPromo } from "@/api/index/promo";
+import "swiper/css/scrollbar";
 import { useLocalStorage } from "@vueuse/core";
 import { useRouter } from "vue-router";
+import { onMounted, ref } from "vue";
+import { api } from "src/boot/axios";
+import { userStore } from "src/stores";
 
-const imgURL = useLocalStorage("IMAGE_CDN", process.env.VUE_APP_IMAGE_CDN).value + "/promo/";
+const imgURL = useLocalStorage("IMAGE_CDN", process.env.IMAGE_CDN).value + "/promo/";
 const router = useRouter();
+const store = userStore();
 
 const promotions = ref([]);
 
 const getPromo = () => {
-  loadPromo("SLOT").then((res) => {
+  const platformApiUrl = "/opt-session/promo/page";
+  api.get(`${platformApiUrl}?siteType=SLOT`).then((res) => {
     if (res.code === 0) {
       promotions.value = res.data.slice(0, 3);
     }
   });
 };
 
-const goToUrl = (redirectUrl) => {
-  const urlSplit = redirectUrl.split("|");
+const gotoPromo = (banner) => {
+  const urlSplit = banner.redirectUrl.split("|");
   if (urlSplit.length >= 2) {
     const type = urlSplit[0];
     if (type === "page") {
       router.push(`/${urlSplit[1]}`);
     } else {
-      router.push(`/promotion?name=${redirectUrl}`);
+      router.push(`/promo?name=${banner.redirectUrl}`);
     }
   } else {
     const openPattern = /^\/open\/(.*)/;
-    if (redirectUrl.match(openPattern)) {
-      const extractedUrl = redirectUrl.match(openPattern)[1];
+    if (banner.redirectUrl.match(openPattern)) {
+      const extractedUrl = banner.redirectUrl.match(openPattern)[1];
       const [gameName, platformCode, gameCode] = extractedUrl.split("/");
 
       allGames.value.open(gameName, platformCode, gameCode, "OPEN");
-    } else if (redirectUrl.includes("https://")) {
-      window.open(redirectUrl, "_blank");
+    } else if (banner.redirectUrl.includes("https://")) {
+      window.open(banner.redirectUrl, "_blank");
     } else {
-      router.push(`/promotion?name=${redirectUrl}`);
+      router.push(`/promo?name=${banner.redirectUrl}`);
     }
   }
 };
@@ -68,35 +66,42 @@ const goToUrl = (redirectUrl) => {
 onMounted(getPromo);
 </script>
 <style lang="scss" scoped>
-.promotion-section {
-  max-width: 1300px;
-  margin: 0 auto;
-  .promotion-list {
+.promotion-wrapper {
+  width: calc(100% - 2rem);
+  margin: 10px auto 10px;
+  .promotion-title {
     display: flex;
-    gap: 20px;
-    .promotion {
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3rem;
+    color: #333333;
+    img {
+      width: 22px;
+    }
+  }
+  .promotion-list {
+    .promotion-item {
       display: block;
-      padding: 12px;
-      margin: 12px 0;
-      background: url(@/assets/images/home/slotEdition/promotion-bg.png) no-repeat;
+      padding: 6px;
+      // background-color: #fff;
+      background: url(../../../assets/images/home/slotEdition/promotion-bg.png) no-repeat;
       background-size: cover;
-      box-shadow: 0px 0px 10px 0px #0000001a;
-      border-radius: 15px;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.1rem;
       img {
-        display: block;
         max-width: 100%;
-        margin: 0 auto 12px;
-        border-radius: 12px;
+        border-radius: 4px;
       }
       span {
         display: block;
-        text-overflow: ellipsis;
-        white-space: nowrap;
         overflow: hidden;
-        font-size: 22px;
-        font-weight: 700;
-        line-height: 30px;
-        color: #424f72;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
     }
   }
